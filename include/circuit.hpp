@@ -1,10 +1,13 @@
+#pragma once
+
 #include <vector>
 #include <pair>
 #include <unordered_map>
 #include <iostream>
 #include <algorithm>
 #include <memory>
-#define DEBUG
+
+#include "matrix_arithmetic.hpp"
 
 namespace Circuit {
 
@@ -17,7 +20,7 @@ class Edge
 {
     std::size_t node_num1_ = 0, node_num2_ = 0;
     double resistance_ = 0.0, emf_ = 0.0;
-    double voltage_ = 0.0, current_ = 0.0;
+    double current_ = 0.0;
 
 public:
     Edge(std::size_t n1, std::size_t n2, double r, double e)
@@ -34,10 +37,10 @@ public:
     double resistance() const {return resistance_;}
     double emf() const {return emf_;}
 
-    double& voltage() {return voltage_;}
     double& current() {return current_;}
-    double voltage() const {return voltage_;}
     double current() const {return current_;}
+
+    double voltage() const {return current_ * resistance_ + emf_;}
 
     bool is_valid() const {return node_num1_ != node_num2_;}
 }; // class Edge
@@ -47,6 +50,8 @@ class Circuit
 {
     using Node = detail::Node;
     using Edge = detail::Edge;
+
+    using MatrixOfIncidence = Matrix::MatrixContainer<int>;
 
     std::unordered_map<std::size_t, Node> nodes_ = {};
     std::vector<std::unique_ptr<Edge>>    edges_ = {};
