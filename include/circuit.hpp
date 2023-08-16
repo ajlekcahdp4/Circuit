@@ -40,7 +40,7 @@ class Circuit
     }       
 
 public:
-    Circuit(Edges&& edges)
+    explicit Circuit(Edges&& edges)
     :edges_ (std::move(edges)), incidence_matrix_ (calc_height(edges.cbegin(), edges.cend()), edges.size())
     {
         auto first = edges_.cbegin();
@@ -52,7 +52,7 @@ public:
         }
     }
 
-    Circuit(const Edges& edges): Circuit(Edges(edges)) {}
+    explicit Circuit(const Edges& edges): Circuit(Edges(edges)) {}
     template<std::input_iterator InpIt>
     Circuit(InpIt first, InpIt last): Circuit(Edges(first, last)) {}
 
