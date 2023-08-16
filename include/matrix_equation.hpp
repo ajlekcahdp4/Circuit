@@ -36,6 +36,24 @@ public:
     :base(twodim_list)
     {}
 
+    Container::Vector<value_type> solve_slae() const
+    {
+        if (this->width() != this->height() + 1)
+            throw std::invalid_argument{"This Matrix isn't slae"};
+
+        MatrixEquation cpy (*this);
+
+        if (Cmp{}(cpy.make_upper_triangular_square(cpy.height()), value_type{}))
+            return Container::Vector<value_type>{};
+        cpy.make_eye_square_from_upper_triangular_square(cpy.height());
+
+        Container::Vector<value_type> solution {};
+        solution.reserve(cpy.height());
+        for (const auto& row: cpy)
+            solution.push_back(row.back());
+
+        return solution;
+    }
 }; // class MatrixEquation
 
 } // namespace Matrix
