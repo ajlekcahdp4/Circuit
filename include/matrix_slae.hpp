@@ -21,7 +21,7 @@ public:
 
     template<std::input_iterator it>
     MatrixSLAE(size_type sz, it begin, it end)
-    :base(sz + 1, szs, begin, end)
+    :base(sz + 1, sz, begin, end)
     {}
 
     MatrixSLAE(value_type val = value_type{})

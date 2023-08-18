@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
-#include "matrix_equation.hpp"
+#include "matrix_slae.hpp"
+#include "circuit.hpp"
 
 struct DblCmp
 {
@@ -36,6 +37,27 @@ TEST(Matrix, solve_slae)
     EXPECT_TRUE(dbl_cmp(solution2[3],  0.0757193));
     EXPECT_TRUE(dbl_cmp(solution2[4],  0.367239 ));
     EXPECT_TRUE(dbl_cmp(solution2[5],  0.707219));
+}
+
+TEST(Circuit, solve_circuit)
+{
+    Circuit::Circuit cir (
+        typename Circuit::Circuit::Edges
+        {1, 2, 4.0},
+        {1, 3, 10.0},
+        {1, 4, 2.0, -12.0}.
+        {2, 3, 60.0},
+        {2, 4, 22.0},
+        {3, 4, 5.0}
+    );
+
+    const auto& solution = cir.solve_circuit();
+    EXPECT_TRUE(dbl_cmp(solution[0],  0.442958));
+    EXPECT_TRUE(dbl_cmp(solution[1],  0.631499 ));
+    EXPECT_TRUE(dbl_cmp(solution[2], -1.07446));
+    EXPECT_TRUE(dbl_cmp(solution[3],  0.0757193));
+    EXPECT_TRUE(dbl_cmp(solution[4],  0.367239 ));
+    EXPECT_TRUE(dbl_cmp(solution[5],  0.707219));
 }
 
 int main(int argc, char **argv)
