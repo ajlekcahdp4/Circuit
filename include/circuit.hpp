@@ -14,6 +14,10 @@ struct Edge
 {
     unsigned node1_ = 0, node2_ = 0;
     double resistance_ = 0.0, emf_ = 0.0;
+    Edge() = default;
+    Edge(unsigned n1, unsigned n2, double r, double e = 0.0)
+    :node1_ {n1 - 1}, node2_ {n2 - 1}, resistance_ {r}, emf_ {e}
+    {}
 }; // struct Edge
 struct connection
 {
@@ -63,19 +67,20 @@ private:
                 max = first->node2_;
             ++first;
         }
-        return static_cast<size_type>(max);
+        return static_cast<size_type>(max + 1);
     }       
 
 public:
     explicit Circuit(Edges&& edges)
-    :edges_ (std::move(edges)), incidence_matrix_ (calc_height(edges.cbegin(), edges.cend()), edges.size())
+    :edges_ (std::move(edges)), incidence_matrix_ (calc_height(edges_.cbegin(), edges_.cend()), edges_.size())
     {
         auto first = edges_.cbegin();
         auto last  = edges_.cend();
-        for (std::size_t i = 0; first != last; i++, first++)
+
+        for (size_type i = 0; i < edges_.size(); i++)
         {
-            incidence_matrix_[first->node1_][i] = output;
-            incidence_matrix_[first->node2_][i] = input;
+            incidence_matrix_[edges_[i].node1_][i] = output;
+            incidence_matrix_[edges_[i].node2_][i] = input;
         }
     }
     
@@ -94,47 +99,45 @@ private:
             std::copy(incidence_matrix_[i].cbegin(), incidence_matrix_[i].cend(), slae[i].begin());
     }
 
-    bool is_full(const Container::Vector<bool>& include_checker) const
+    // add M + 1 equations in sale matrix
+    void add_potential_difference_equations(MatrixSLAE& slae) const
     {
-        for (auto is_included: include_checker)
-            if (!is_included)
-                return false;
-        return true;
-    }
-
-    void add_equation_for_edge(MatrxIterator itr, size_type edge) const
-    {
-
-    }
-
-    // add M - N + 1 equations in sale matrix
-    void add_second_Kirchhof_rule_equations(MatrixSLAE& slae) const
-    {
-        Container::Vector<bool> include_checker (number_of_edges());
-        size_type edge = 0;
-
-        for (auto itr = slae.begin() + number_of_nodes() - 1, end = slae.end(); itr != end; ++itr)
+        slae[number_of_nodes() - 1][number_of_edges()] = 1.0; // equation phi0 == 0
+        for (size_type i = 0; i < number_of_edges(); i++)
         {
-            for (;!include_checker[edge]; ++edge)
-            add_equation_for_edge(itr->begin(), edge);
-        }
+            auto& row = slae[number_of_nodes() + i];
+            const auto& edge = edges_[i];
 
-        assert(is_full(include_checker));
+            row[i]     = edge.resistance_;
+            row.back() = edge.emf_;
+            row[number_of_edges() + edge.node1_] = -1.0;
+            row[number_of_edges() + edge.node2_] = 1.0;
+        }
     }
 
     MatrixSLAE make_slae() const
     {
-        MatrixSLAE slae (number_of_edges());
+        MatrixSLAE slae (number_of_edges() + number_of_nodes());
         add_first_Kirchhof_rule_equations(slae);
-        add_second_Kirchhof_rule_equations(slae);
+        add_potential_difference_equations(slae);
         return slae;
     }
 
 public:
     Container::Vector<double> solve_circuit() const
     {
-        const auto& slae = make_slae();
-        return slae.solve_slae();
+        const auto& slae     = make_slae();
+#if 0
+        for (const auto& row: slae)
+        {
+            for (const auto& elem: row)
+                std::cout << elem << " ";
+            std::cout << std::endl;
+        }
+#endif
+        auto solution = slae.solve_slae();
+        solution.resize(number_of_edges());
+        return solution;
     }
 }; // class Circuit
 } // namespace Circuit

@@ -13,12 +13,12 @@ struct DblCmp
 
 TEST(Matrix, solve_slae)
 {
-    Matrix::MatrixEquation<double, DblCmp> slae1 {{1, 1, 2}, {2, 1, 5}};
+    Matrix::MatrixSLAE<double, DblCmp> slae1 {{1, 1, 2}, {2, 1, 5}};
     const auto& solution1 = slae1.solve_slae();
     EXPECT_EQ(solution1[0], 3);
     EXPECT_EQ(solution1[1], -1);
 
-    Matrix::MatrixEquation<double, DblCmp> slae2
+    Matrix::MatrixSLAE<double, DblCmp> slae2
     {{1,   1,  1,  0,  0,  0, 0},
      {1,   0,  0, -1, -1,  0, 0},
      {0,   1,  0,  1,  0, -1, 0},
@@ -41,23 +41,37 @@ TEST(Matrix, solve_slae)
 
 TEST(Circuit, solve_circuit)
 {
-    Circuit::Circuit cir (
-        typename Circuit::Circuit::Edges
+    DblCmp dbl_cmp {};
+    
+    Circuit::Circuit cir1 (
+        typename Circuit::Circuit::Edges({
         {1, 2, 4.0},
         {1, 3, 10.0},
-        {1, 4, 2.0, -12.0}.
+        {1, 4, 2.0, -12.0},
         {2, 3, 60.0},
         {2, 4, 22.0},
         {3, 4, 5.0}
-    );
+    }));
 
-    const auto& solution = cir.solve_circuit();
-    EXPECT_TRUE(dbl_cmp(solution[0],  0.442958));
-    EXPECT_TRUE(dbl_cmp(solution[1],  0.631499 ));
-    EXPECT_TRUE(dbl_cmp(solution[2], -1.07446));
-    EXPECT_TRUE(dbl_cmp(solution[3],  0.0757193));
-    EXPECT_TRUE(dbl_cmp(solution[4],  0.367239 ));
-    EXPECT_TRUE(dbl_cmp(solution[5],  0.707219));
+    const auto& solution1 = cir1.solve_circuit();
+    EXPECT_TRUE(dbl_cmp(solution1[0],  0.442958));
+    EXPECT_TRUE(dbl_cmp(solution1[1],  0.631499 ));
+    EXPECT_TRUE(dbl_cmp(solution1[2], -1.07446));
+    EXPECT_TRUE(dbl_cmp(solution1[3],  0.0757193));
+    EXPECT_TRUE(dbl_cmp(solution1[4],  0.367239 ));
+    EXPECT_TRUE(dbl_cmp(solution1[5],  0.707219));
+
+    Circuit::Circuit cir2 (
+        typename Circuit::Circuit::Edges({
+        {1, 2, 1.0, 1.0},
+        {1, 3, 0.0},
+        {2, 3, 0.0}
+    }));
+
+    const auto& solution2 = cir2.solve_circuit();
+    EXPECT_TRUE(dbl_cmp(solution2[0], 1.0));
+    EXPECT_TRUE(dbl_cmp(solution2[1], -1.0));
+    EXPECT_TRUE(dbl_cmp(solution2[2], 1.0));
 }
 
 int main(int argc, char **argv)

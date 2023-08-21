@@ -13,19 +13,15 @@ class MatrixSLAE : public MatrixArithmetic<T, true, Cmp, Abs>
     using value_type = T;
 
 public:
-    MatrixSLAE(size_type sz): base(sz + 1, sz) {}
+    MatrixSLAE(size_type sz): base(sz, sz + 1) {}
 
     MatrixSLAE(size_type sz, typename base::const_reference val)
-    :base(sz + 1, sz, val)
+    :base(sz, sz + 1, val)
     {}
 
     template<std::input_iterator it>
     MatrixSLAE(size_type sz, it begin, it end)
-    :base(sz + 1, sz, begin, end)
-    {}
-
-    MatrixSLAE(value_type val = value_type{})
-    :base(val)
+    :base(sz, sz + 1, begin, end)
     {}
 
     MatrixSLAE(std::initializer_list<std::initializer_list<value_type>> twodim_list)
