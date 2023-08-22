@@ -38,16 +38,18 @@ public:
     :base(sz, sz + 1, begin, end)
     {}
 
+    bool is_matrix_of_slae() const {return (this->width() == this->height() + 1);}
+
     MatrixSLAE(std::initializer_list<std::initializer_list<value_type>> twodim_list)
     :base(twodim_list)
     {
-        if (this->width() != this->height() + 1)
+        if (!is_matrix_of_slae())
             throw std::length_error{"invalid size of MatrixSLAE in ctor"};
     }
 
     Container::Vector<value_type> solve_slae() const
     {
-        if (this->width() != this->height() + 1)
+        if (!is_matrix_of_slae())
             throw std::invalid_argument{"This Matrix isn't slae"};
 
         MatrixSLAE cpy (*this);
