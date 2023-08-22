@@ -8,6 +8,7 @@ namespace Matrix
 template<typename T, class Cmp, class Abs = detail::DefaultAbs<T>>
 class MatrixSLAE : public MatrixArithmetic<T, true, Cmp, Abs>
 {
+public:
     using base = MatrixArithmetic<T, true, Cmp, Abs>;
 
     using typename base::size_type;
@@ -26,10 +27,9 @@ class MatrixSLAE : public MatrixArithmetic<T, true, Cmp, Abs>
     using typename base::ReverseIterator;
     using typename base::ConstReverseIterator;
 
-public:
     MatrixSLAE(size_type sz): base(sz, sz + 1) {}
 
-    MatrixSLAE(size_type sz, typename base::const_reference val)
+    MatrixSLAE(size_type sz, const_reference val)
     :base(sz, sz + 1, val)
     {}
 
@@ -54,7 +54,8 @@ public:
 
         MatrixSLAE cpy (*this);
 
-        if (this->cmp(cpy.make_upper_triangular_square(cpy.height()), value_type{}))
+        cpy.make_upper_triangular_square(cpy.height());
+        if (this->cmp(cpy.determinant_for_upper_triangular(cpy.height()), value_type{}))
             return Container::Vector<value_type>{};
         cpy.make_eye_square_from_upper_triangular_square(cpy.height());
 
