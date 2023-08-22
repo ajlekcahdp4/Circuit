@@ -38,7 +38,7 @@ public:
 
         MatrixSLAE cpy (*this);
 
-        if (Cmp{}(cpy.make_upper_triangular_square(cpy.height()), value_type{}))
+        if (this->cmp(cpy.make_upper_triangular_square(cpy.height()), value_type{}))
             return Container::Vector<value_type>{};
         cpy.make_eye_square_from_upper_triangular_square(cpy.height());
 
