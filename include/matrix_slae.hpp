@@ -8,9 +8,23 @@ namespace Matrix
 template<typename T, class Cmp, class Abs = detail::DefaultAbs<T>>
 class MatrixSLAE : public MatrixArithmetic<T, true, Cmp, Abs>
 {
-    using base       = MatrixArithmetic<T, true, Cmp, Abs>;
-    using size_type  = std::size_t;
-    using value_type = T;
+    using base = MatrixArithmetic<T, true, Cmp, Abs>;
+
+    using typename base::size_type;
+    using typename base::value_type;
+    using typename base::reference;
+    using typename base::const_reference;
+    using typename base::pointer;
+    using typename base::const_pointer;
+
+    using typename base::Row;
+
+    using typename base::RowIterator;
+    using typename base::RowConstIterator;
+    using typename base::Iterator;
+    using typename base::ConstIterator;
+    using typename base::ReverseIterator;
+    using typename base::ConstReverseIterator;
 
 public:
     MatrixSLAE(size_type sz): base(sz, sz + 1) {}
@@ -19,8 +33,8 @@ public:
     :base(sz, sz + 1, val)
     {}
 
-    template<std::input_iterator it>
-    MatrixSLAE(size_type sz, it begin, it end)
+    template<std::input_iterator InpIt>
+    MatrixSLAE(size_type sz, InpIt begin, InpIt end)
     :base(sz, sz + 1, begin, end)
     {}
 
@@ -44,8 +58,8 @@ public:
 
         Container::Vector<value_type> solution {};
         solution.reserve(cpy.height());
-        for (const auto& row: cpy)
-            solution.push_back(row.back());
+        for (auto& row: cpy)
+            solution.push_back(std::move(row.back()));
 
         return solution;
     }
