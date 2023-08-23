@@ -29,10 +29,6 @@ public:
 
     MatrixSLAE(size_type sz): base(sz, sz + 1) {}
 
-    MatrixSLAE(size_type sz, const_reference val)
-    :base(sz, sz + 1, val)
-    {}
-
     template<std::input_iterator InpIt>
     MatrixSLAE(size_type sz, InpIt begin, InpIt end)
     :base(sz, sz + 1, begin, end)
@@ -41,10 +37,11 @@ public:
     bool is_matrix_of_slae() const {return (this->width() == this->height() + 1);}
 
     MatrixSLAE(std::initializer_list<std::initializer_list<value_type>> twodim_list)
-    :base(twodim_list)
+    :MatrixSLAE(twodim_list.size())
     {
-        if (!is_matrix_of_slae())
-            throw std::length_error{"invalid size of MatrixSLAE in ctor"};
+        auto begin = this->begin();
+        for (auto& row: twodim_list)
+            std::copy(row.begin(), row.end(), (begin++)->begin());
     }
 
     Container::Vector<value_type> solve_slae() const
