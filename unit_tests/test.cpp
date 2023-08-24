@@ -13,7 +13,7 @@ struct DblCmp
 
 using MatrixSLAE = Matrix::MatrixSLAE<double, DblCmp>;
 
-TEST(Matrix, solve_slae)
+TEST(MatrixSLAE, solve_slae)
 {
     DblCmp dbl_cmp {};
 
@@ -68,7 +68,7 @@ TEST(Circuit, solve_circuit)
         {3, 4, 5.0}
     });
 
-    const auto& solution1 = cir1.solve_circuit();
+    auto solution1 = cir1.solve_circuit();
     EXPECT_TRUE(dbl_cmp(solution1[0],  0.442958));
     EXPECT_TRUE(dbl_cmp(solution1[1],  0.631499 ));
     EXPECT_TRUE(dbl_cmp(solution1[2], -1.07446));
@@ -82,7 +82,7 @@ TEST(Circuit, solve_circuit)
         {2, 3, 0.0}
     });
 
-    const auto& solution2 = cir2.solve_circuit();
+    auto solution2 = cir2.solve_circuit();
     EXPECT_TRUE(dbl_cmp(solution2[0], 1.0));
     EXPECT_TRUE(dbl_cmp(solution2[1], -1.0));
     EXPECT_TRUE(dbl_cmp(solution2[2], 1.0));

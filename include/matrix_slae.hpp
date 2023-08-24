@@ -39,9 +39,12 @@ public:
     MatrixSLAE(std::initializer_list<std::initializer_list<value_type>> twodim_list)
     :MatrixSLAE(twodim_list.size())
     {
-        auto begin = this->begin();
+        auto itr = this->begin();
         for (auto& row: twodim_list)
-            std::copy(row.begin(), row.end(), (begin++)->begin());
+        {
+            std::copy(row.begin(), row.end(), itr->begin());
+            ++itr;
+        }
     }
 
     Container::Vector<value_type> solve_slae() const
