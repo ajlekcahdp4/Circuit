@@ -69,12 +69,12 @@ TEST(Circuit, solve_circuit)
     });
 
     auto solution1 = cir1.solve_circuit();
-    EXPECT_TRUE(dbl_cmp(solution1[0],  0.442958));
-    EXPECT_TRUE(dbl_cmp(solution1[1],  0.631499 ));
-    EXPECT_TRUE(dbl_cmp(solution1[2], -1.07446));
-    EXPECT_TRUE(dbl_cmp(solution1[3],  0.0757193));
-    EXPECT_TRUE(dbl_cmp(solution1[4],  0.367239 ));
-    EXPECT_TRUE(dbl_cmp(solution1[5],  0.707219));
+    EXPECT_TRUE(dbl_cmp(solution1[0].second,  0.442958));
+    EXPECT_TRUE(dbl_cmp(solution1[1].second,  0.631499 ));
+    EXPECT_TRUE(dbl_cmp(solution1[2].second, -1.07446));
+    EXPECT_TRUE(dbl_cmp(solution1[3].second,  0.0757193));
+    EXPECT_TRUE(dbl_cmp(solution1[4].second,  0.367239 ));
+    EXPECT_TRUE(dbl_cmp(solution1[5].second,  0.707219));
 
     Circuit::Circuit cir2 ({
         {1, 2, 1.0, 1.0},
@@ -83,9 +83,9 @@ TEST(Circuit, solve_circuit)
     });
 
     auto solution2 = cir2.solve_circuit();
-    EXPECT_TRUE(dbl_cmp(solution2[0], 1.0));
-    EXPECT_TRUE(dbl_cmp(solution2[1], -1.0));
-    EXPECT_TRUE(dbl_cmp(solution2[2], 1.0));
+    EXPECT_TRUE(dbl_cmp(solution2[0].second, 1.0));
+    EXPECT_TRUE(dbl_cmp(solution2[1].second, -1.0));
+    EXPECT_TRUE(dbl_cmp(solution2[2].second, 1.0));
 }
 
 int main(int argc, char **argv)

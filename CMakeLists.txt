@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.18)
 
-project(ElcCir LANGUAGES CXX)
+project(Circuit LANGUAGES CXX)
 
 if (${PROJECT_SOURCE_DIR} STREQUAL ${PROJECT_BINARY_DIR})
     message(FATAL_ERROR "In-source build is forbidden")
@@ -20,3 +20,4 @@ set(CMAKE_CXX_EXTENSIONS        OFF)
 
 add_subdirectory(unit_tests)
 add_subdirectory(include/matrix)
+add_subdirectory(task)

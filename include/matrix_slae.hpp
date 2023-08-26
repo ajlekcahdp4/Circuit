@@ -1,7 +1,6 @@
 #pragma once
 
 #include "matrix_arithmetic.hpp"
-
 namespace Matrix
 {
 
