@@ -1,45 +1,53 @@
 #include "input_output.hpp"
 #include <cctype>
+#include <string>
 
 namespace Circuit
 {
 namespace InputOutput
 {    
-Edge scan_edge()
+Edge scan_edge(const std::string& str)
 {
-    unsigned node1 = 0, node2 = 0;
-    double res = 0.0, emf = 0.0;
-    char c = '\0';
+    Edge edge {};
+    
+    auto itr = str.cbegin();
 
-    std::cin >> node1;
+    itr += std::sscanf(std::to_address(itr), "%u", &edge.node1_);
+    --edge.node1_;
+    
+    for (;!std::isdigit(*itr) && itr != str.cend(); ++itr) {}
 
-    while (!std::isdigit((std::cin >> c, c)) && !std::cin.eof()) {}
-    std::cin.unget();
-    std::cin >> node2;
+    if (itr == str.cend())
+        throw std::logic_error{"invalid input of node2"};
+    else
+        --itr;
 
-    while (!std::isdigit((std::cin >> c, c)) && !std::cin.eof()) {}
-    std::cin.unget();
-    std::cin >> res;
+    itr += std::sscanf(std::to_address(itr), "%u", &edge.node2_);
+    --edge.node2_;
+    
+    for (;!std::isdigit(*itr) && itr != str.cend(); ++itr) {}
 
-    while (!std::isdigit((std::cin >> c, c)) && c != '-' && !std::cin.eof()) {}
+    if (itr == str.cend())
+        throw std::logic_error{"invalid input of resistance"};
+    else
+        --itr;
+    
+    itr += std::sscanf(std::to_address(itr), "%lf", &edge.resistance_);
 
-    if (!std::cin.eof())
-    {
-        std::cin.unget();
-        std::cin >> emf;
-        while (!std::isdigit((std::cin >> c, c)) && !std::cin.eof()) {}
-        if (std::isdigit(c))
-            std::cin.unget();
-    }
+    for (;!std::isdigit(*itr) && *itr != '-' && itr != str.cend(); ++itr) {}
+    
+    if (itr != str.cend())
+        std::sscanf(std::to_address(--itr), "%lf", &edge.emf_);
 
-    return Edge(node1, node2, res, emf);
+    return edge;
 }
 
 Container::Vector<Edge> input()
 {
     Container::Vector<Edge> edges {};
-    while (!std::cin.eof())
-        edges.push_back(scan_edge());
+    std::string str {};
+    while (std::getline(std::cin, str))
+        edges.push_back(scan_edge(str));
     return edges;
 }
 
