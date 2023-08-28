@@ -35,10 +35,11 @@ class Circuit final
 {
 public:
     using Solution = Container::Vector<std::pair<Edge, double>>;
-private:
-    using size_type = std::size_t;
     using Edges = Container::Vector<Edge>;
 
+private:
+    using size_type = std::size_t;
+    
     struct DblCmp
     {
         bool operator()(double d1, double d2) const
@@ -72,16 +73,21 @@ private:
     }       
 
 public:
-    template<std::input_iterator InpIt>
-    Circuit(InpIt first, InpIt last)
-    :edges_ (first, last), incidence_matrix_ (calc_height(first, last), edges_.size())
+    Circuit(Edges&& edges)
+    :edges_ (std::move(edges)), incidence_matrix_ (calc_height(edges_.cbegin(), edges_.cend()), edges_.size())
     {
+        auto first = edges_.cbegin();
+        auto last  = edges_.cend();
+
         for (size_type i = 0; first != last; ++first, ++i)
         {
             incidence_matrix_[first->node1_][i] = flow_out;
             incidence_matrix_[first->node2_][i] = flow_in;
         }
     }
+
+    template<std::input_iterator InpIt>
+    Circuit(InpIt first, InpIt last): Circuit(Edges(first, last)) {}
 
     Circuit(std::initializer_list<Edge> ilist): Circuit(ilist.begin(), ilist.end()) {}
 

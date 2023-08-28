@@ -8,43 +8,46 @@ namespace InputOutput
 {    
 Edge scan_edge(const std::string& str)
 {
-    Edge edge {};
+    unsigned node1 = 0, node2 = 0;
+    double res = 0.0, emf = 0.0;
     
-    auto itr = str.cbegin();
+    std::size_t pos = 0;
+    std::size_t i = 0;
 
-    itr += std::sscanf(std::to_address(itr), "%u", &edge.node1_);
-    --edge.node1_;
-    
-    for (;!std::isdigit(*itr) && itr != str.cend(); ++itr) {}
+    node1 = static_cast<unsigned>(std::stoi(str.c_str() + pos, &i));
+    pos += i;
 
-    if (itr == str.cend())
+    for (;pos != str.size() && !std::isdigit(str[pos]); ++pos) {}
+    if (pos == str.size())
         throw std::logic_error{"invalid input of node2"};
     else
-        --itr;
+        --pos;
 
-    itr += std::sscanf(std::to_address(itr), "%u", &edge.node2_);
-    --edge.node2_;
+    node2 = static_cast<unsigned>(std::stoi(str.c_str() + pos, &i));
+    pos += i;
     
-    for (;!std::isdigit(*itr) && itr != str.cend(); ++itr) {}
-
-    if (itr == str.cend())
+    for (;pos != str.size() && !std::isdigit(str[pos]); ++pos) {}
+    if (pos == str.size())
         throw std::logic_error{"invalid input of resistance"};
     else
-        --itr;
+        --pos;
     
-    itr += std::sscanf(std::to_address(itr), "%lf", &edge.resistance_);
-
-    for (;!std::isdigit(*itr) && *itr != '-' && itr != str.cend(); ++itr) {}
+    res = std::stod(str.c_str() + pos, &i);
+    pos += i;
     
-    if (itr != str.cend())
-        std::sscanf(std::to_address(--itr), "%lf", &edge.emf_);
+    for (;pos != str.size() && !std::isdigit(str[pos]) && str[pos] != '-'; ++pos) {}
+    if (pos != str.size())
+    {
+        --pos;
+        emf = std::stod(str.c_str() + pos);
+    }
 
-    return edge;
+    return Edge(node1, node2, res, emf);
 }
 
-Container::Vector<Edge> input()
+typename Circuit::Edges input()
 {
-    Container::Vector<Edge> edges {};
+    typename Circuit::Edges edges {};
     std::string str {};
     while (std::getline(std::cin, str))
         edges.push_back(scan_edge(str));
