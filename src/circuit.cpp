@@ -36,11 +36,13 @@ auto Circuit::solve_circuit() const -> Solution
 {
     auto slae = make_slae();
     auto currents = slae.solve_slae();
+    if (currents.size() == 0)
+        return Solution{};
 
     Solution solution {};
     solution.reserve(number_of_edges());
     for (size_type i = 0; i < number_of_edges(); ++i)
-        solution.push_back(std::make_pair(edges_[i], currents[i]));
+        solution.push_back(std::pair<Edge, double>(edges_[i], currents[i]));
     return solution;
 }
 } // namespace Circuit
