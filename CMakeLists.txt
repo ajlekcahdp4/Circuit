@@ -30,7 +30,7 @@ add_custom_target(unit_tests
         circuit_test
 )
 
-add_custom_target(circuit 
+add_custom_target(whole_project
     DEPENDS
         unit_tests
         currents
