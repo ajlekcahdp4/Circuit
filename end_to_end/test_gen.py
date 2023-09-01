@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import random, sys
-from lcapy import Circuit
 import math
 
 # number of nodes  - 1 arg
