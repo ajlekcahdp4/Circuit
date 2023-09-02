@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-import random, sys
-import math
+
+import random, sys, math
 import numpy as np
 
 # number of nodes  - 1 arg
