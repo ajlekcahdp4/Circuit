@@ -4,8 +4,8 @@ import sys, math, re, os
 import numpy as np
 
 def scan_edge(line: str):
-    nums = re.findall(r'\b\d\b\d\b\f', line)
-    return {int(nums[0], int(nums[1]), float(nums[3]))}
+    nums = re.findall(r'[-+]?(?:\d*\.*\d+)', line)
+    return {int(nums[0]), int(nums[1]), float(nums[2])}
 
 def scan_edges(file):
     edges = np.zeros(0, dtype=tuple)
@@ -32,6 +32,7 @@ def edges_cmp(result, answer, test_name):
             print('\tresult edge: ' + str(result[i][0]) + ' -- ' + str(result[i][1]) + ': ' + str(result[i][2]) + ' A')
             print('\tanswer edge: ' + str(answer[i][0]) + ' -- ' + str(answer[i][1]) + ': ' + str(answer[i][2]) + ' A')
             return 0
+    print(test_name + ': Passed')
     return 1
 
 def main():
@@ -54,4 +55,7 @@ def main():
         file_answer.close()
 
         passed += edges_cmp(result, answer, test_name)
+
     print('Passed ' + str(passed) + ' out of ' + str(nmumber_of_tests))
+
+main()
