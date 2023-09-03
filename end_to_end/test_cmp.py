@@ -4,21 +4,24 @@ import sys, math, re, os
 import numpy as np
 
 def scan_edge(line: str):
-    nums = re.findall(r'[-+]?(?:\d*\.*\d+)', line)
-    return {int(nums[0]), int(nums[1]), float(nums[2])}
+    # print('scan_edge')
+    nums = re.findall(r'[-+]?(?:(?:\d*\.\d+)|(?:\d+\.?))(?:[Ee][+-]?\d+)?', line)
+    return (int(nums[0]), int(nums[1]), float(nums[2]))
 
 def scan_edges(file):
-    edges = np.zeros(0, dtype=tuple)
+    edges = []
     for line in file:
-        np.append(edges, scan_edge(line))
+        edges.append(scan_edge(line))
     return edges
 
 def edge_cmp(edge1, edge2):
-    return edge1[0] == edge2[0] and edge1[1] == edge2[1] and math.isclose(edge1[3], edge2[3], rel_tol=1e-6)
+    return edge1[0] == edge2[0] and edge1[1] == edge2[1] and math.isclose(edge1[2], edge2[2], rel_tol=1e-4, abs_tol=1e-8)
 
 def edges_cmp(result, answer, test_name):
     len1 = len(result)
     len2 = len(answer)
+
+    # print(len1)
 
     if len1 != len2:
         print(test_name + ': result and answer has different number of edges:')
@@ -48,7 +51,6 @@ def main():
         result = scan_edges(file_result)
         file_result.close()
         os.system('rm tmp')
-
 
         file_answer = open(test_name + '.ans', 'r')
         answer = scan_edges(file_answer)

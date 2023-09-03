@@ -39,7 +39,7 @@ def generate_answer(edges, number_of_edges, number_of_nodes):
         i += 1
     for k in range(number_of_edges + number_of_nodes):
         matrix_coef[number_of_nodes - 1][k] = 0
-    matrix_coef[number_of_nodes - 1][number_of_edges] = 1
+    matrix_coef[number_of_nodes - 1][number_of_edges] = 1.0
     i = 0
     for edge in edges:
         matrix_coef[number_of_nodes + i][i] = edge[2]
@@ -68,6 +68,8 @@ def calc_number_of_nodes(edges):
     return max + 1
 
 def print_answer(file_answer, edges, currents):
+    if len(currents) == 0:
+        return
     for i in range(len(edges)):
         file_answer.write(str(edges[i][0] + 1) + ' -- ' + str(edges[i][1] + 1) + ': ' + str(currents[i]) + ' A\n')
 
@@ -85,6 +87,5 @@ def main():
         file_answer = open(filename_answer, 'w')
         print_answer(file_answer, edges, currents)
         file_answer.close()
-
 
 main()
