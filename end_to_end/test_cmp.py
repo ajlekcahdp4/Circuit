@@ -39,11 +39,11 @@ def edges_cmp(result, answer, test_name):
     return 1
 
 def main():
-    nmumber_of_tests = len(sys.argv) - 2
+    number_of_tests = len(sys.argv) - 2
     build_dir = sys.argv[1]
     passed = 0
 
-    for i in range(nmumber_of_tests):
+    for i in range(number_of_tests):
         test_name = sys.argv[i + 2]
 
         os.system('./' + build_dir + './task/currents < ' + test_name + ' > tmp')
@@ -58,6 +58,7 @@ def main():
 
         passed += edges_cmp(result, answer, test_name)
 
-    print('Passed ' + str(passed) + ' out of ' + str(nmumber_of_tests))
+    print('\n' + str(int(float(passed)/float(number_of_tests) * 100.0)) + '% tests passed, ', end='')
+    print(str(number_of_tests - passed) + ' tests failed out of ' + str(number_of_tests))
 
 main()
