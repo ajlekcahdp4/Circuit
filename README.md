@@ -37,6 +37,13 @@ Script compares output of program and answer. Scripit searches answet in `test{i
 
 # Example of end to end testing from build to result.
 
+If you want to use my scripts you need `numpy`, `math` and `termcolor` libraries, you can install these libraries by these commands:
+```
+pip install numpy
+pip install math
+pip install termcolor
+```
+
 ```
 cmake -B build/ -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=Release
 
@@ -44,24 +51,17 @@ cmake --build build/ --target currents
 
 cd end_to_end/
 
-for i in $(seg 1 1 10); ./test_gen.py 15 test${i}.dat --ans
+for i in $(seq 1 1 20); ./test_gen.py 20 test${i}.dat --ans
 
 ./test_cmp.py ../build/ *.dat
 ```
 Result:
-```
-test1.dat: Passed
-test2.dat: Passed
-test3.dat: Passed
-test4.dat: Passed
-test5.dat: Passed
-test6.dat: Passed
-test7.dat: Passed
-test8.dat: Passed
-test9.dat: Passed
-test10.dat: Passed
-Passed 10 out of 10
-```
+
+![image](.readme/runnernormal.png)
+
+If error occurred:
+
+![image](.readme/runnererr.png)
 
 # How to run programm?
 ```
