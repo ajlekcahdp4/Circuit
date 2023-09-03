@@ -57,11 +57,11 @@ for i in $(seq 1 1 20); ./test_gen.py 20 test${i}.dat --ans
 ```
 Result:
 
-![image](.readme/runnernormal.png)
+![image](.readme_src/runnernormal.png)
 
 If error occurred:
 
-![image](.readme/runnererr.png)
+![image](.readme_src/runnererr.png)
 
 # How to run programm?
 ```
