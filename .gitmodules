@@ -4,3 +4,5 @@
 [submodule "end_to_end/test_runner"]
 	url = https://github.com/LegendaryHog/test_runner.git
 	path = end_to_end/test_runner
+[submodule "https://github.com/LegendaryHog/matrix.git"]
+	url = include/matrix
