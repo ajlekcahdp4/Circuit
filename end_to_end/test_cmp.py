@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 
-import sys, math, re, os, time
-from termcolor import colored
+import sys, math, re, os
+sys.path.append('test_runner')
+import test_runner
 
-LEN_DOTS = 61
+# build directory - 1 arg
+# name of tests   - other args
 
 def scan_edge(line: str):
-    # print('scan_edge')
     nums = re.findall(r'[-+]?(?:(?:\d*\.\d+)|(?:\d+\.?))(?:[Ee][+-]?\d+)?', line)
     return (int(nums[0]), int(nums[1]), float(nums[2]))
 
@@ -19,76 +20,30 @@ def scan_edges(file):
 def edge_cmp(edge1, edge2):
     return edge1[0] == edge2[0] and edge1[1] == edge2[1] and math.isclose(edge1[2], edge2[2], rel_tol=1e-4, abs_tol=1e-8)
 
-def print_dots(len_name):
-    for i in range(LEN_DOTS - len_name):
-        print('.', end='')
-
-def print_spaces(num):
-    for i in range(num):
-        print(' ', end='')
-
-def edges_cmp(result, answer, test_name, time):
+def edges_cmp(file_res, file_ans):
+    result = scan_edges(file_res)
+    answer = scan_edges(file_ans)
     len1 = len(result)
     len2 = len(answer)
 
-    # print(len1)
-
     if len1 != len2:
-        print(test_name + ' ', end='')
-        print_dots(len(test_name))
-        print(colored('   Failed    ', 'red') + str(round(time, 2)) + ' sec')
-        print('\tresult and answer has different number of edges:')
-        print('\tin result: ' + str(len1))
-        print('\tin answer: ' + str(len2))
-        return 0
+        output = '\tresult and answer has different number of edges:\n'
+        output += '\tin result: ' + str(len1) + '\n'
+        output += '\tin answer: ' + str(len2) + '\n'
+        return (0, output)
     
     for i in range(len1):
         if not edge_cmp(result[i], answer[i]):
-            print(test_name + ' ', end='')
-            print_dots(len(test_name))
-            print(colored('   Failed    ', 'red') + str(round(time, 2)) + ' sec')
-            print('\tresult edge: ' + str(result[i][0]) + ' -- ' + str(result[i][1]) + ': ' + str(result[i][2]) + ' A')
-            print('\tanswer edge: ' + str(answer[i][0]) + ' -- ' + str(answer[i][1]) + ': ' + str(answer[i][2]) + ' A')
-            return 0
+            output = '\tresult edge: ' + str(result[i][0]) + ' -- ' + str(result[i][1]) + ': ' + str(result[i][2]) + ' A\n'
+            output += '\tanswer edge: ' + str(answer[i][0]) + ' -- ' + str(answer[i][1]) + ': ' + str(answer[i][2]) + ' A\n'
+            return (0, output)
     
-    print(test_name + ' ', end='')
-    print_dots(len(test_name))
-    print(colored('   Passed    ', 'green') + str(round(time, 2)) + ' sec')
-    
-    return 1
+    return (1, '')
 
 def main():
-    number_of_tests = len(sys.argv) - 2
-    build_dir = sys.argv[1]
-    passed = 0
-    total_time = 0
-
-    print('Start testing, build directory: ' + build_dir + '\n')
-
-    for i in range(number_of_tests):
-        test_name = sys.argv[i + 2]
-
-        start = time.perf_counter()
-        os.system('./' + build_dir + './task/currents < ' + test_name + ' > tmp')
-        end = time.perf_counter()
-        file_result = open('tmp', 'r')
-        result = scan_edges(file_result)
-        file_result.close()
-        os.system('rm tmp')
-
-        file_answer = open(test_name + '.ans', 'r')
-        answer = scan_edges(file_answer)
-        file_answer.close()
-
-        passed += edges_cmp(result, answer, test_name, end - start)
-        total_time += end - start
-
-    out = str(int(float(passed)/float(number_of_tests) * 100.0)) + '% tests passed'
-    if passed == number_of_tests:  
-        print(colored('\n' + out, 'green'), end='')
-    else:
-        print(colored('\n' + out, 'red'), end='')
-    print(', ' + str(number_of_tests - passed) + ' tests failed out of ' + str(number_of_tests))
-    print('\nTotal Test time (real) = ' + str(round(total_time, 2)) + ' sec')
-
+    test_names = sys.argv.copy()
+    test_names.pop(0)
+    test_names.pop(0)
+    test_runner.run_tests(sys.argv[1] + '/task/currents', test_names, edges_cmp)
+    
 main()
