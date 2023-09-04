@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import sys, math, re, os
+import sys, math, re
 sys.path.append('test_runner')
 import test_runner
 
