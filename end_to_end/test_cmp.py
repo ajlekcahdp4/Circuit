@@ -44,6 +44,6 @@ def main():
     test_names = sys.argv.copy()
     test_names.pop(0)
     test_names.pop(0)
-    test_runner.run_tests(sys.argv[1] + '/task/currents', test_names, edges_cmp)
+    test_runner.run_all_tests(sys.argv[1] + '/task/currents', test_names, edges_cmp)
     
 main()
