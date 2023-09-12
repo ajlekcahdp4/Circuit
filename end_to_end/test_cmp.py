@@ -30,15 +30,15 @@ def edges_cmp(file_res, file_ans):
         output = '\tresult and answer has different number of edges:\n'
         output += '\tin result: ' + str(len1) + '\n'
         output += '\tin answer: ' + str(len2) + '\n'
-        return (0, output)
+        return 0, output
     
     for i in range(len1):
         if not edge_cmp(result[i], answer[i]):
             output = '\tresult edge: ' + str(result[i][0]) + ' -- ' + str(result[i][1]) + ': ' + str(result[i][2]) + ' A\n'
             output += '\tanswer edge: ' + str(answer[i][0]) + ' -- ' + str(answer[i][1]) + ': ' + str(answer[i][2]) + ' A\n'
-            return (0, output)
+            return 0, output
     
-    return (1, '')
+    return 1, ''
 
 def main():
     test_names = sys.argv.copy()
