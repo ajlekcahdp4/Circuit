@@ -4,6 +4,8 @@
 #include <iostream>
 #include <algorithm>
 #include <cassert>
+#include <unordered_map>
+#include <set>
 
 #include "matrix_arithmetic.hpp"
 #include "matrix_slae.hpp"
@@ -16,7 +18,7 @@ struct Edge
     double resistance_ = 0.0, emf_ = 0.0;
     Edge() = default;
     Edge(unsigned n1, unsigned n2, double r, double e = 0.0)
-    :node1_ {n1 - 1}, node2_ {n2 - 1}, resistance_ {r}, emf_ {e}
+    :node1_ {n1}, node2_ {n2}, resistance_ {r}, emf_ {e}
     {}
 }; // struct Edge
 struct connection
@@ -49,6 +51,7 @@ private:
     };
     using MatrixSLAE     = Matrix::MatrixSLAE<double, DblCmp>;
     using MatrixIterator = MatrixSLAE::Iterator;
+    using Map            = std::unordered_map<unsigned, size_type>;
 
     // size() is M - number of edges
     Edges edges_ = {};
@@ -58,31 +61,49 @@ private:
     // If edge I flow out node J than           mat[I][J] == flow_out (-1) 
     // If edge I not connected with node J than mat[I][J] == not_connected (0)
     Matrix::MatrixContainer<connection> incidence_matrix_ = {};
+    
+    Map nodes_to_indexis_ = {};
 
     template<std::forward_iterator FwdIt>
-    std::size_t calc_height(FwdIt first, FwdIt last) const 
+    static std::size_t calc_height(FwdIt first, FwdIt last)
     {
-        unsigned max = 0;
-        while (first != last)
+        std::set<unsigned> set_nodes {};
+        for (; first != last; ++first)
+            set_nodes.insert({first->node1_, first->node2_});
+        return set_nodes.size();
+    }   
+
+    template<std::forward_iterator FwdIt>
+    static Map fill_nodes_to_indexis(FwdIt first, FwdIt last)
+    {
+        Map nodes_to_indexis {};
+        for (size_type i = 0; first != last; ++first)
         {
-            if (first->node2_ > max)
-                max = first->node2_;
-            ++first;
+            if (nodes_to_indexis.insert(Map::value_type{first->node1_, i}).second)
+                ++i;
+            if (nodes_to_indexis.insert(Map::value_type{first->node2_, i}).second)
+                ++i;
         }
-        return static_cast<size_type>(max + 1);
-    }       
+        return nodes_to_indexis;
+    }
+
+    size_type index(unsigned node) const
+    {
+        return nodes_to_indexis_.find(node)->second;
+    }
 
 public:
     Circuit(Edges&& edges)
-    :edges_ (std::move(edges)), incidence_matrix_ (calc_height(edges_.cbegin(), edges_.cend()), edges_.size())
+    :edges_ (std::move(edges)), incidence_matrix_ (calc_height(edges_.cbegin(), edges_.cend()), edges_.size()),
+     nodes_to_indexis_ (fill_nodes_to_indexis(edges_.cbegin(), edges_.cend()))
     {
         auto first = edges_.cbegin();
         auto last  = edges_.cend();
 
         for (size_type i = 0; first != last; ++first, ++i)
         {
-            incidence_matrix_[first->node1_][i] = flow_out;
-            incidence_matrix_[first->node2_][i] = flow_in;
+            incidence_matrix_[index(first->node1_)][i] = flow_out;
+            incidence_matrix_[index(first->node2_)][i] = flow_in;
         }
     }
 

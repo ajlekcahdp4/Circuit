@@ -27,8 +27,8 @@ void Circuit::add_potential_difference_equations(MatrixSLAE& slae) const
 
         row[i]     = edge.resistance_;
         row.back() = edge.emf_;
-        row[number_of_edges() + edge.node1_] = -1.0;
-        row[number_of_edges() + edge.node2_] = 1.0;
+        row[number_of_edges() + index(edge.node1_)] = -1.0;
+        row[number_of_edges() + index(edge.node2_)] = 1.0;
     }
 }
 

@@ -58,7 +58,7 @@ void output(SolutionIt first, SolutionIt last)
 {
     while (first != last)
     {
-        std::cout << first->first.node1_ + 1 << " -- " << first->first.node2_ + 1 << ": ";
+        std::cout << first->first.node1_ << " -- " << first->first.node2_ << ": ";
         std::cout << first->second << " A\n";
         ++first;
     }
