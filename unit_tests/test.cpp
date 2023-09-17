@@ -121,6 +121,29 @@ TEST(Circuit, solve_circuitCornerCase)
     EXPECT_TRUE(dbl_cmp(solution3[2].second, 0.0));
     EXPECT_TRUE(dbl_cmp(solution3[3].second, 1.0));
     EXPECT_TRUE(dbl_cmp(solution3[4].second, 1.0));
+
+    Circuit::Circuit cir4 {
+        {1, 2, 1.0},
+        {1, 3, 1.0},
+        {2, 3, 1.0, 3.0},
+        {4, 5, 1.0},
+        {4, 6, 1.0},
+        {5, 6, 1.0, 3.0}
+    };
+
+#ifdef FIXED
+    auto solution4 = cir4.solve_circuit();
+    EXPECT_TRUE(!solution4.empty());
+    if (!solution4.empty())
+    {
+        EXPECT_TRUE(dbl_cmp(solution4[0].second, 1.0));
+        EXPECT_TRUE(dbl_cmp(solution4[1].second, -1.0));
+        EXPECT_TRUE(dbl_cmp(solution4[2].second, 1.0));
+        EXPECT_TRUE(dbl_cmp(solution4[3].second, 1.0));
+        EXPECT_TRUE(dbl_cmp(solution4[4].second, -1.0));
+        EXPECT_TRUE(dbl_cmp(solution4[5].second, 1.0));
+    }
+#endif
 }
 
 int main(int argc, char** argv)
