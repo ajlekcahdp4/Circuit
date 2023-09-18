@@ -20,27 +20,20 @@ Edge scan_edge(const std::string& str)
     for (;pos != str.size() && !std::isdigit(str[pos]); ++pos) {}
     if (pos == str.size())
         throw std::logic_error{"invalid input of node2"};
-    else
-        --pos;
 
-    node2 = static_cast<unsigned>(std::stoi(str.c_str() + pos, &i));
+    node2 = static_cast<unsigned>(std::stoi(str.c_str() + --pos, &i));
     pos += i;
     
     for (;pos != str.size() && !std::isdigit(str[pos]); ++pos) {}
     if (pos == str.size())
         throw std::logic_error{"invalid input of resistance"};
-    else
-        --pos;
     
-    res = std::stod(str.c_str() + pos, &i);
+    res = std::stod(str.c_str() + --pos, &i);
     pos += i;
     
     for (;pos != str.size() && !std::isdigit(str[pos]) && str[pos] != '-'; ++pos) {}
     if (pos != str.size())
-    {
-        --pos;
-        emf = std::stod(str.c_str() + pos);
-    }
+        emf = std::stod(str.c_str() + --pos);
 
     return Edge(node1, node2, res, emf);
 }
