@@ -9,7 +9,7 @@ namespace InputOutput
 {
 typename Circuit::Edges input();
 
-using SolutionIt = typename Circuit::Solution::ConstIterator;
+using SolutionIt = typename Circuit::Solution::const_iterator;
 void output(SolutionIt first, SolutionIt last);
 } // namespace InputOutput
 } // namespace Circuit

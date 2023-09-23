@@ -58,9 +58,9 @@ TEST(MatrixSLAE, solve_slae)
     EXPECT_EQ(solution4.size(), 0);
 }
 
-TEST(Circuit, solve_circuitCommonCases)
+TEST(ConnectedCircuit, solve_circuitCommonCases)
 {
-    Circuit::Circuit cir1 {
+    Circuit::ConnectedCircuit cir1 {
         {1, 2, 4.0},
         {1, 3, 10.0},
         {1, 4, 2.0, -12.0},
@@ -77,7 +77,7 @@ TEST(Circuit, solve_circuitCommonCases)
     EXPECT_TRUE(dbl_cmp(solution1[4].second,  0.367239 ));
     EXPECT_TRUE(dbl_cmp(solution1[5].second,  0.707219));
 
-    Circuit::Circuit cir2 {
+    Circuit::ConnectedCircuit cir2 {
         {1, 2, 1.0, 1.0},
         {1, 3, 0.0},
         {2, 3, 0.0}
@@ -89,16 +89,16 @@ TEST(Circuit, solve_circuitCommonCases)
     EXPECT_TRUE(dbl_cmp(solution2[2].second, 1.0));
 }
 
-TEST(Circuit, solve_circuitCornerCase)
+TEST(ConnectedCircuit, solve_circuitCornerCase)
 {
-    Circuit::Circuit cir1 {
+    Circuit::ConnectedCircuit cir1 {
         {1, 2, 2.0, 1.0}
     };
 
     auto solution1 = cir1.solve_circuit();
     EXPECT_TRUE(dbl_cmp(solution1[0].second, 0.0));
 
-    Circuit::Circuit cir2 {
+    Circuit::ConnectedCircuit cir2 {
         {1, 2, 2.0, 2.0},
         {1, 3, 2.0, 1.0}
     };
@@ -107,7 +107,7 @@ TEST(Circuit, solve_circuitCornerCase)
     EXPECT_TRUE(dbl_cmp(solution2[0].second, 0.0));
     EXPECT_TRUE(dbl_cmp(solution2[1].second, 0.0));
 
-    Circuit::Circuit cir3 {
+    Circuit::ConnectedCircuit cir3 {
         {1, 2, 1.0, 4.0},
         {1, 4, 1.0},
         {1, 5, 1.0, 10.0},
@@ -121,8 +121,77 @@ TEST(Circuit, solve_circuitCornerCase)
     EXPECT_TRUE(dbl_cmp(solution3[2].second, 0.0));
     EXPECT_TRUE(dbl_cmp(solution3[3].second, 1.0));
     EXPECT_TRUE(dbl_cmp(solution3[4].second, 1.0));
+}
 
-    Circuit::Circuit cir4 {
+TEST(Circuit, solve_circuitConnectedCase)
+{
+    Circuit::Circuit cir1 {
+        {1, 2, 4.0},
+        {1, 3, 10.0},
+        {1, 4, 2.0, -12.0},
+        {2, 3, 60.0},
+        {2, 4, 22.0},
+        {3, 4, 5.0}
+    };
+
+    const auto& solution1 = cir1.solve_circuit();
+    auto itr1 = solution1.cbegin();
+    EXPECT_TRUE(dbl_cmp((itr1++)->second,  0.442958));
+    EXPECT_TRUE(dbl_cmp((itr1++)->second,  0.631499 ));
+    EXPECT_TRUE(dbl_cmp((itr1++)->second, -1.07446));
+    EXPECT_TRUE(dbl_cmp((itr1++)->second,  0.0757193));
+    EXPECT_TRUE(dbl_cmp((itr1++)->second,  0.367239 ));
+    EXPECT_TRUE(dbl_cmp((itr1++)->second,  0.707219));
+
+    Circuit::Circuit cir2 {
+        {1, 2, 1.0, 1.0},
+        {1, 3, 0.0},
+        {2, 3, 0.0}
+    };
+
+    const auto& solution2 = cir2.solve_circuit();
+    auto itr2 = solution2.cbegin();
+    EXPECT_TRUE(dbl_cmp((itr2++)->second, 1.0));
+    EXPECT_TRUE(dbl_cmp((itr2++)->second, -1.0));
+    EXPECT_TRUE(dbl_cmp((itr2++)->second, 1.0));
+
+    Circuit::ConnectedCircuit cir3 {
+        {1, 2, 2.0, 1.0}
+    };
+
+    const auto& solution3 = cir3.solve_circuit();
+    EXPECT_TRUE(dbl_cmp(solution3.front().second, 0.0));
+
+    Circuit::ConnectedCircuit cir4 {
+        {1, 2, 2.0, 2.0},
+        {1, 3, 2.0, 1.0}
+    };
+
+    const auto& solution4 = cir4.solve_circuit();
+    EXPECT_TRUE(dbl_cmp(solution4.front().second, 0.0));
+    EXPECT_TRUE(dbl_cmp(solution4.back().second, 0.0));
+
+    Circuit::ConnectedCircuit cir5 {
+        {1, 2, 1.0, 4.0},
+        {1, 4, 1.0},
+        {1, 5, 1.0, 10.0},
+        {2, 3, 1.0},
+        {3, 4, 1.0}
+    };
+
+    const auto& solution5 = cir5.solve_circuit();
+    auto itr5 = solution5.cbegin();
+    EXPECT_TRUE(dbl_cmp((itr5++)->second, 1.0));
+    EXPECT_TRUE(dbl_cmp((itr5++)->second, -1.0));
+    EXPECT_TRUE(dbl_cmp((itr5++)->second, 0.0));
+    EXPECT_TRUE(dbl_cmp((itr5++)->second, 1.0));
+    EXPECT_TRUE(dbl_cmp((itr5++)->second, 1.0));
+}
+
+TEST(Circuit, solve_circuitDisconnectedCase)
+{
+
+    Circuit::Circuit cir1 {
         {1, 2, 1.0},
         {1, 3, 1.0},
         {2, 3, 1.0, 3.0},
@@ -131,19 +200,18 @@ TEST(Circuit, solve_circuitCornerCase)
         {5, 6, 1.0, 3.0}
     };
 
-#ifdef FIXED
-    auto solution4 = cir4.solve_circuit();
-    EXPECT_TRUE(!solution4.empty());
-    if (!solution4.empty())
+    const auto& solution1 = cir1.solve_circuit();
+    EXPECT_TRUE(!solution1.empty());
+    if (!solution1.empty())
     {
-        EXPECT_TRUE(dbl_cmp(solution4[0].second, 1.0));
-        EXPECT_TRUE(dbl_cmp(solution4[1].second, -1.0));
-        EXPECT_TRUE(dbl_cmp(solution4[2].second, 1.0));
-        EXPECT_TRUE(dbl_cmp(solution4[3].second, 1.0));
-        EXPECT_TRUE(dbl_cmp(solution4[4].second, -1.0));
-        EXPECT_TRUE(dbl_cmp(solution4[5].second, 1.0));
+        auto itr1 = solution1.cbegin();
+        EXPECT_TRUE(dbl_cmp((itr1++)->second, 1.0));
+        EXPECT_TRUE(dbl_cmp((itr1++)->second, -1.0));
+        EXPECT_TRUE(dbl_cmp((itr1++)->second, 1.0));
+        EXPECT_TRUE(dbl_cmp((itr1++)->second, 1.0));
+        EXPECT_TRUE(dbl_cmp((itr1++)->second, -1.0));
+        EXPECT_TRUE(dbl_cmp((itr1++)->second, 1.0));
     }
-#endif
 }
 
 int main(int argc, char** argv)
