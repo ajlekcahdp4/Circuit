@@ -190,7 +190,6 @@ TEST(Circuit, solve_circuitConnectedCase)
 
 TEST(Circuit, solve_circuitDisconnectedCase)
 {
-
     Circuit::Circuit cir1 {
         {1, 2, 1.0},
         {1, 3, 1.0},
@@ -212,6 +211,38 @@ TEST(Circuit, solve_circuitDisconnectedCase)
         EXPECT_TRUE(dbl_cmp((itr1++)->second, -1.0));
         EXPECT_TRUE(dbl_cmp((itr1++)->second, 1.0));
     }
+
+    Circuit::Circuit cir2 {
+        {1, 4, 1.0, 5.0},
+        {1, 5, 1.0},
+        {2, 4, 1.0},
+        {2, 7, 1.0},
+        {3, 6, 1.0, 5.0},
+        {3, 9, 1.0},
+        {5, 7, 1.0},
+        {6, 10, 1.0},
+        {8, 9, 1.0},
+        {8, 10, 1.0},
+        {11, 12, 1.0, 3.0},
+        {11, 13, 1.0},
+        {12, 13, 1.0}
+    };
+
+    const auto& solution2 = cir2.solve_circuit();
+    auto itr2 = solution2.begin();
+    EXPECT_TRUE(dbl_cmp((itr2++)->second, 1.0)); // 1 -- 4
+    EXPECT_TRUE(dbl_cmp((itr2++)->second, -1.0)); // 1 -- 5
+    EXPECT_TRUE(dbl_cmp((itr2++)->second, -1.0)); // 2 -- 4
+    EXPECT_TRUE(dbl_cmp((itr2++)->second, 1.0)); // 2 -- 7
+    EXPECT_TRUE(dbl_cmp((itr2++)->second, 1.0)); // 3 -- 6
+    EXPECT_TRUE(dbl_cmp((itr2++)->second, -1.0)); // 3 -- 9
+    EXPECT_TRUE(dbl_cmp((itr2++)->second, -1.0)); // 5 -- 7
+    EXPECT_TRUE(dbl_cmp((itr2++)->second, 1.0)); // 6 -- 10
+    EXPECT_TRUE(dbl_cmp((itr2++)->second, 1.0)); // 8 -- 9
+    EXPECT_TRUE(dbl_cmp((itr2++)->second, -1.0)); // 8 -- 10
+    EXPECT_TRUE(dbl_cmp((itr2++)->second, 1.0)); // 11 -- 12
+    EXPECT_TRUE(dbl_cmp((itr2++)->second, -1.0)); // 11 -- 13
+    EXPECT_TRUE(dbl_cmp((itr2++)->second, 1.0)); // 12 -- 13
 }
 
 int main(int argc, char** argv)
