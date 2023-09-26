@@ -23,12 +23,14 @@ struct Edge
 
 bool operator==(const Edge& e1, const Edge& e2);
 } // namespace Circuit
+
 template<> 
 struct std::hash<Circuit::Edge>
 {
     std::size_t operator()(const Circuit::Edge& edge) const noexcept
     {
-        return edge.node1_ + edge.node2_;
+        std::hash<unsigned> hash;
+        return hash(edge.node1_) ^ hash(edge.node2_);
     }
 };
 
