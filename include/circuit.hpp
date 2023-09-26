@@ -144,7 +144,7 @@ private:
     void add_first_Kirchhof_rule_equations(MatrixSLAE& slae) const;
     
     // Complexity: O(N * E)
-    // add M + 1 equations in sale matrix
+    // add E + 1 equations in sale matrix
     void add_potential_difference_equations(MatrixSLAE& slae) const;
 
     // Complexity: O((N + E)^2)
@@ -182,7 +182,9 @@ private:
     // MN = max(N_1, N_2, ... N_C) - max number of nodes in connected circuit (N_i - cirs_[i].number_of_nodes())
     // ME = max(E_1, E_2, ... E_C) - max number of edges in connected circuit (E_i - cirs_[i].number_of_edges())
     // N - number of nodes (number_of_nodes_)
-    // M - number of edges (edges_.size())
+    // E - number of edges (edges_.size())
+    // E/C <= ME <= E
+    // N/C <= MC <= N
     Edges edges_ = {};
     Container::Vector<ConnectedCircuit> cirs_ = {};
     size_type number_of_nodes_ = 0;
@@ -257,7 +259,7 @@ public:
     size_type number_of_edges() const {return edges_.size();}
     size_type number_of_nodes() const {return number_of_nodes_;}
 
-    // Complexity: O(max(C * (MN + ME)^3, ME * logE)
+    // Complexity: O(max(C * (MN + ME)^3, ME * logE))
     Solution solve_circuit() const;
 }; // class Circuit
 } // namespace Circuit
