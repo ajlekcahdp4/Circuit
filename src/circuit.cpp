@@ -23,7 +23,7 @@ auto Circuit::make_nodes() const -> Nodes
     return nodes;
 }
 
-// Complexity: O(max(C * (MN + ME)^3, ME * logE))
+// Complexity: O(С * (MN + ME)^3)
 auto Circuit::solve_circuit() const -> Solution
 {
     Solution solution {};

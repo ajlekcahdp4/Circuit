@@ -116,7 +116,7 @@ public:
     size_type number_of_edges() const {return edges_.size();}
     size_type number_of_nodes() const {return number_of_nodes_;}
 
-    // Complexity: O(max(C * (MN + ME)^3, ME * logE))
+    // Complexity: O(C * (MN + ME)^3)
     Solution solve_circuit() const;
 }; // class Circuit
 } // namespace Circuit
