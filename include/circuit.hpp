@@ -65,7 +65,7 @@ private:
         }
     };
     using MatrixSLAE     = Matrix::MatrixSLAE<double, DblCmp>;
-    using MatrixIterator = MatrixSLAE::Iterator;
+    using MatrixIterator = MatrixSLAE::iterator;
     using Map            = std::unordered_map<unsigned, size_type>;
 
     // N - number of nodes
