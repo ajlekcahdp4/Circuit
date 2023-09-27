@@ -201,6 +201,9 @@ TEST(Circuit, solve_circuitDisconnectedCase)
 
     const auto& solution1 = cir1.solve_circuit();
     EXPECT_TRUE(!solution1.empty());
+    EXPECT_EQ(cir1.number_of_connected_circuits(), 2);
+    EXPECT_EQ(cir1.number_of_edges(), 6);
+    EXPECT_EQ(cir1.number_of_nodes(), 6);
     if (!solution1.empty())
     {
         auto itr1 = solution1.cbegin();
@@ -230,6 +233,11 @@ TEST(Circuit, solve_circuitDisconnectedCase)
 
     const auto& solution2 = cir2.solve_circuit();
     auto itr2 = solution2.begin();
+
+    EXPECT_EQ(cir2.number_of_connected_circuits(), 3);
+    EXPECT_EQ(cir2.number_of_nodes(), 13);
+    EXPECT_EQ(cir2.number_of_edges(), 13);
+
     EXPECT_TRUE(dbl_cmp((itr2++)->second, 1.0)); // 1 -- 4
     EXPECT_TRUE(dbl_cmp((itr2++)->second, -1.0)); // 1 -- 5
     EXPECT_TRUE(dbl_cmp((itr2++)->second, -1.0)); // 2 -- 4

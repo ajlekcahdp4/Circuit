@@ -39,18 +39,34 @@ private:
     // MN = max(N_1, N_2, ... N_C) - max number of nodes in connected circuit (N_i - cirs_[i].number_of_nodes())
     // ME = max(E_1, E_2, ... E_C) - max number of edges in connected circuit (E_i - cirs_[i].number_of_edges())
     // N - number of nodes (number_of_nodes_)
-    // E - number of edges (edges_.size())
+    // E - number of edges (number_of_edges_)
     // E/C <= ME <= E
     // N/C <= MC <= N
-    Edges edges_ = {};
     Container::Vector<ConnectedCircuit> cirs_ = {};
-    size_type number_of_nodes_ = 0;
-
+    size_type number_of_edges_ = 0, number_of_nodes_ = 0;
+    
     using Nodes = std::unordered_map<unsigned, Container::Vector<std::pair<unsigned, const Edge*>>>;
     using Node  = typename Nodes::value_type;
 
     // Complexity: O(E)
-    Nodes make_nodes() const;
+    template<std::input_iterator InpIt>
+    static Nodes make_nodes(InpIt first, InpIt last)
+    {
+        Nodes nodes {};
+        
+        for (;first != last; ++first) // O(E) iterations
+        {
+            const auto& pair1 = nodes.insert(Node{first->node1_, Container::Vector{std::make_pair(first->node2_, std::to_address(first))}});
+            const auto& pair2 = nodes.insert(Node{first->node2_, Container::Vector{std::make_pair(first->node1_, std::to_address(first))}});
+
+            if (!pair1.second)
+                pair1.first->second.push_back(std::make_pair(first->node2_, std::to_address(first)));
+            if (!pair2.second)
+                pair2.first->second.push_back(std::make_pair(first->node1_, std::to_address(first)));
+        }
+
+        return nodes;
+    }
 
     // Complexity: O(1)
     static void add_node_in_connected_cir
@@ -92,9 +108,10 @@ private:
 
 public:
     // Complexity: O(C * MN * ME)
-    explicit Circuit(Edges&& edges): edges_ (std::move(edges))
+    template<std::input_iterator InpIt>
+    Circuit(InpIt first, InpIt last)
     {
-        Nodes nodes = make_nodes(); // O(E) iterations
+        Nodes nodes = make_nodes(first, last); // O(E) iterations
         number_of_nodes_ = nodes.size();
 
         size_type nodes_placed = 0;
@@ -104,17 +121,15 @@ public:
             const auto& connected_cir = pair.first;
             nodes_placed += pair.second;
             cirs_.push_back(make_connected_cir(connected_cir.cbegin(), connected_cir.cend())); // O(MN * ME) iterations
+            number_of_edges_ += cirs_.back().number_of_edges();
         }
     }
-
-    // Complexity: O(C * MN * ME)
-    template<std::input_iterator InpIt>
-    Circuit(InpIt first, InpIt last): Circuit(Edges(first, last)) {}
     // Complexity: O(C * MN * ME)
     Circuit(std::initializer_list<Edge> ilist): Circuit(ilist.begin(), ilist.end()) {}
 
-    size_type number_of_edges() const {return edges_.size();}
+    size_type number_of_edges() const {return number_of_edges_;}
     size_type number_of_nodes() const {return number_of_nodes_;}
+    size_type number_of_connected_circuits() const {return cirs_.size();}
 
     // Complexity: O(C * (MN + ME)^3)
     Solution solve_circuit() const;
