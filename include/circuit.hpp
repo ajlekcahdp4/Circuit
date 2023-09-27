@@ -76,7 +76,7 @@ private:
                     add_node_in_connected_cir(nodes, itr, connected_cir, nodes_placed);
             }
 
-        return std::make_pair(std::move(connected_cir), std::move(nodes_placed));
+        return std::make_pair(std::move(connected_cir), nodes_placed);
     }
 
     // Complexity: O(MN * ME)
