@@ -86,7 +86,7 @@ private:
     static std::size_t calc_height(FwdIt first, FwdIt last)
     {
         std::unordered_set<unsigned> set_nodes {};
-        for (; first != last; ++first) // O(E) iterations
+        for (; first != last; ++first) // E iterations
             set_nodes.insert({first->node1_, first->node2_});
         return set_nodes.size();
     }   
@@ -96,7 +96,7 @@ private:
     static Map fill_nodes_to_indexis(FwdIt first, FwdIt last)
     {
         Map nodes_to_indexis {};
-        for (size_type i = 0; first != last; ++first) // O(E) iterations
+        for (size_type i = 0; first != last; ++first) // E iterations
         {
             if (nodes_to_indexis.insert(Map::value_type{first->node1_, i}).second)
                 ++i;
@@ -121,7 +121,7 @@ public:
         auto first = edges_.cbegin();
         auto last  = edges_.cend();
 
-        for (size_type i = 0; first != last; ++first, ++i) // O(E) iterations
+        for (size_type i = 0; first != last; ++first, ++i) // E iterations
         {
             incidence_matrix_[index(first->node1_)][i] = flow_out;
             incidence_matrix_[index(first->node2_)][i] = flow_in;

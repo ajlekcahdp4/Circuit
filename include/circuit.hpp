@@ -54,7 +54,7 @@ private:
     {
         Nodes nodes {};
         
-        for (;first != last; ++first) // O(E) iterations
+        for (;first != last; ++first) // E iterations
         {
             const auto& pair1 = nodes.insert(Node{first->node1_, Container::Vector{std::make_pair(first->node2_, std::to_address(first))}});
             const auto& pair2 = nodes.insert(Node{first->node2_, Container::Vector{std::make_pair(first->node1_, std::to_address(first))}});
@@ -84,8 +84,8 @@ private:
         Container::Vector<Node> connected_cir {};
         add_node_in_connected_cir(nodes, nodes.begin(), connected_cir, nodes_placed);
 
-        for (size_type i = 0; i < connected_cir.size(); ++i) // O(MN) iterations
-            for (const auto& node: connected_cir[i].second) // O(ME) iterations
+        for (size_type i = 0; i < connected_cir.size(); ++i) // MN iterations
+            for (const auto& node: connected_cir[i].second) // ME iterations
             {
                 auto itr = nodes.find(node.first);
                 if (itr != nodes.end())
@@ -100,10 +100,10 @@ private:
     static ConnectedCircuit make_connected_cir(InpIt first, InpIt last)
     {
         std::unordered_set<Edge> edges_set {};
-        for (;first != last; ++first) // O(MN) iterations
-            for (const auto& pair: first->second) // O(ME) iterations
+        for (;first != last; ++first) // MN iterations
+            for (const auto& pair: first->second) // ME iterations
                 edges_set.insert(*pair.second);
-        return ConnectedCircuit(edges_set.cbegin(), edges_set.cend()); // O(ME)
+        return ConnectedCircuit(edges_set.cbegin(), edges_set.cend()); // ME iterations
     }
 
 public:
@@ -111,16 +111,16 @@ public:
     template<std::input_iterator InpIt>
     Circuit(InpIt first, InpIt last)
     {
-        Nodes nodes = make_nodes(first, last); // O(E) iterations
+        Nodes nodes = make_nodes(first, last); // E iterations
         number_of_nodes_ = nodes.size();
 
         size_type nodes_placed = 0;
-        while (nodes_placed != number_of_nodes_) // O(C) iterations
+        while (nodes_placed != number_of_nodes_) // C iterations
         {
-            const auto& pair = make_connected_cir_as_nodes(nodes); // O(MN * ME) iterations
+            const auto& pair = make_connected_cir_as_nodes(nodes); // MN * ME iterations
             const auto& connected_cir = pair.first;
             nodes_placed += pair.second;
-            cirs_.push_back(make_connected_cir(connected_cir.cbegin(), connected_cir.cend())); // O(MN * ME) iterations
+            cirs_.push_back(make_connected_cir(connected_cir.cbegin(), connected_cir.cend())); // MN * ME iterations
             number_of_edges_ += cirs_.back().number_of_edges();
         }
     }
