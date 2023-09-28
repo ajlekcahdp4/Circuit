@@ -70,29 +70,27 @@ private:
 
     // Complexity: O(1)
     static void add_node_in_connected_cir
-    (Nodes& nodes, typename Nodes::iterator itr, Container::Vector<Node>& con_cir, size_type& nodes_placed)
+    (Nodes& nodes, typename Nodes::iterator itr, Container::Vector<Node>& con_cir)
     {
         con_cir.push_back(std::move(*itr));
         nodes.erase(itr);
-        ++nodes_placed;
     }
 
     // Complexity: O(MN * ME)
-    static std::pair<Container::Vector<Node>, size_type> make_connected_cir_as_nodes(Nodes& nodes)
+    static Container::Vector<Node> make_connected_cir_as_nodes(Nodes& nodes)
     {
-        size_type nodes_placed = 0;
         Container::Vector<Node> connected_cir {};
-        add_node_in_connected_cir(nodes, nodes.begin(), connected_cir, nodes_placed);
+        add_node_in_connected_cir(nodes, nodes.begin(), connected_cir);
 
         for (size_type i = 0; i < connected_cir.size(); ++i) // MN iterations
             for (const auto& node: connected_cir[i].second) // ME iterations
             {
                 auto itr = nodes.find(node.first);
                 if (itr != nodes.end())
-                    add_node_in_connected_cir(nodes, itr, connected_cir, nodes_placed);
+                    add_node_in_connected_cir(nodes, itr, connected_cir);
             }
 
-        return std::make_pair(std::move(connected_cir), nodes_placed);
+        return connected_cir;
     }
 
     // Complexity: O(MN * ME)
@@ -115,11 +113,9 @@ public:
         number_of_nodes_ = nodes.size();
 
         size_type nodes_placed = 0;
-        while (nodes_placed != number_of_nodes_) // C iterations
+        while (!nodes.empty()) // C iterations
         {
-            const auto& pair = make_connected_cir_as_nodes(nodes); // MN * ME iterations
-            const auto& connected_cir = pair.first;
-            nodes_placed += pair.second;
+            const auto& connected_cir = make_connected_cir_as_nodes(nodes); // MN * ME iterations
             cirs_.push_back(make_connected_cir(connected_cir.cbegin(), connected_cir.cend())); // MN * ME iterations
             number_of_edges_ += cirs_.back().number_of_edges();
         }
