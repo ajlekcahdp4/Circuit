@@ -98,9 +98,15 @@ private:
     static ConnectedCircuit make_connected_cir(InpIt first, InpIt last)
     {
         std::unordered_set<Edge> edges_set {};
+        size_type errors = 0;
+
         for (;first != last; ++first) // MN iterations
             for (const auto& pair: first->second) // ME iterations
-                edges_set.insert(*pair.second);
+                errors += !edges_set.insert(*pair.second).second;
+                
+        if (errors != edges_set.size())
+            throw std::logic_error{"input has identical edges"};
+
         return ConnectedCircuit(edges_set.cbegin(), edges_set.cend()); // ME iterations
     }
 
