@@ -5,37 +5,65 @@
 namespace Circuit
 {
 namespace InputOutput
-{    
+{   
+
+using str_citr = typename std::string::const_iterator;
+unsigned scan_unsigned(str_citr& itr)
+{
+    std::size_t pos = 0;
+    auto val = static_cast<unsigned>(std::stoi(std::to_address(itr), &pos));
+    itr += pos;
+    return val;
+}
+
+double scan_double(str_citr& itr)
+{
+    std::size_t pos = 0;
+    auto val = static_cast<double>(std::stod(std::to_address(itr), &pos));
+    itr += pos;
+    return val;
+}
+
+str_citr skip_to_unsigned(str_citr itr, str_citr end)
+{
+    for (;itr != end && !std::isdigit(*itr); ++itr) {}
+    if (itr != end)
+        --itr;
+    return itr;
+}
+
+str_citr skip_to_signed(str_citr itr, str_citr end)
+{
+    for (;itr != end && !std::isdigit(*itr) && *itr != '-'; ++itr) {}
+    if (itr != end)
+        --itr;
+    return itr;
+}
+
 Edge scan_edge(const std::string& str)
 {
     unsigned node1 = 0, node2 = 0;
     double res = 0.0, emf = 0.0;
     
-    std::size_t pos = 0;
-    std::size_t i = 0;
+    auto itr = str.cbegin();
 
-    node1 = static_cast<unsigned>(std::stoi(str.c_str() + pos, &i));
-    pos += i;
+    node1 = scan_unsigned(itr);
 
-    for (;pos != str.size() && !std::isdigit(str[pos]) ; ++pos) {}
-    if (pos == str.size())
+    itr = skip_to_unsigned(itr, str.cend());
+    if (itr == str.cend())
         throw std::logic_error{"invalid input of node2"};
+    node2 = scan_unsigned(itr);
 
-    node2 = static_cast<unsigned>(std::stoi(str.c_str() + --pos, &i));
-    pos += i;
-    
-    for (;pos != str.size() && !std::isdigit(str[pos]) && str[pos] != '-'; ++pos) {}
-    if (pos == str.size())
-        throw std::logic_error{"invalid input of resistance"};
-    if (str[pos] == '-')
+    itr = skip_to_signed(itr, str.cend());
+    if (itr == str.cend())
+        throw std::logic_error{"invalid input of resistance"};    
+    res = scan_double(itr);
+    if (res < 0.0)
         throw std::logic_error{"you cannot input negative resistance"};
-    
-    res = std::stod(str.c_str() + --pos, &i);
-    pos += i;
-    
-    for (;pos != str.size() && !std::isdigit(str[pos]) && str[pos] != '-'; ++pos) {}
-    if (pos != str.size())
-        emf = std::stod(str.c_str() + --pos);
+
+    itr = skip_to_signed(itr, str.cend());
+    if (itr != str.cend())
+        emf = scan_double(itr);
 
     return Edge(node1, node2, res, emf);
 }
