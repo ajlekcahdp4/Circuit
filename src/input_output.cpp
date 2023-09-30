@@ -8,6 +8,7 @@ namespace InputOutput
 {   
 
 using str_citr = typename std::string::const_iterator;
+
 unsigned scan_unsigned(str_citr& itr)
 {
     std::size_t pos = 0;
@@ -68,7 +69,7 @@ Edge scan_edge(const std::string& str)
     return Edge(node1, node2, res, emf);
 }
 
-typename Circuit::Edges input()
+Container::Vector<Edge> input()
 {
     Container::Vector<Edge> edges {};
     std::string str {};
