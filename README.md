@@ -11,7 +11,7 @@ git clone --recurse-submodules git@github.com:LegendaryHog/ElcCir.git
 cmake -B build/ -DCMAKE_CXX_COMPILER=[your c++ compiler] -DCMAKE_BUILD_TYPE=Release
 
 cmake --build build/ --target unit_tests    # building all unit tests
-cmkae --build build/ --target currents      # building problem solution
+cmake --build build/ --target currents      # building problem solution
 cmake --build build/ --target whole_project # building the unit_tests and currents
 ```
 
