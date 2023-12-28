@@ -20,6 +20,14 @@ cmake --build build/ --target whole_project # building the unit_tests and curren
 ctest --test-dir build/
 ```
 
+# Requirements for testing
+If you want to use my scripts you need `numpy`, `math` and `termcolor` libraries, you can install these libraries by these commands:
+```
+pip install numpy
+pip install math
+pip install termcolor
+```
+
 # How to generate end to end tests?
 In directory `end_to_end/`:
 ```
@@ -36,13 +44,6 @@ chmod "+x" test_cmp.py
 Script compares output of program and answer. Scripit searches answet in `test{i}.ans`.
 
 # Example of end to end testing from build to result.
-
-If you want to use my scripts you need `numpy`, `math` and `termcolor` libraries, you can install these libraries by these commands:
-```
-pip install numpy
-pip install math
-pip install termcolor
-```
 
 ```
 cmake -B build/ -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=Release
