@@ -89,6 +89,22 @@ TEST(ConnectedCircuit, solve_circuitCommonCases)
     EXPECT_TRUE(dbl_cmp(solution2[2].second, 1.0));
 }
 
+TEST(ConnectedCircuit, solve_circuitMultiEdgeCase)
+{
+    Circuit::ConnectedCircuit cir1 {
+        {1, 2, 1.0, 2.0},
+        {1, 2, 1.0}
+    };
+
+    auto solution1 = cir1.solve_circuit();
+    EXPECT_EQ(solution1.size(), 2);
+    if (!solution1.size())
+    {
+        EXPECT_TRUE(dbl_cmp(solution1[0].second, 1.0));
+        EXPECT_TRUE(dbl_cmp(solution1[1].second, -1.0));
+    }
+}
+
 TEST(ConnectedCircuit, solve_circuitCornerCase)
 {
     Circuit::ConnectedCircuit cir1 {
@@ -252,6 +268,24 @@ TEST(Circuit, solve_circuitDisconnectedCase)
     EXPECT_TRUE(dbl_cmp((itr2++)->second, -1.0)); // 11 -- 13
     EXPECT_TRUE(dbl_cmp((itr2++)->second, 1.0)); // 12 -- 13
 }
+
+TEST(Circuit, solve_circuitMultiEdgeCase)
+{
+    Circuit::Circuit cir1 {
+        {1, 2, 1.0, 2.0},
+        {1, 2, 1.0}
+    };
+
+    auto solution1 = cir1.solve_circuit();
+    EXPECT_EQ(solution1.size(), 2);
+    if (!solution1.size())
+    {
+        auto itr1 = solution1.cbegin();
+        EXPECT_TRUE(dbl_cmp((itr1++)->second, 1.0));
+        EXPECT_TRUE(dbl_cmp((itr1++)->second, -1.0));
+    }
+}
+
 
 int main(int argc, char** argv)
 {
