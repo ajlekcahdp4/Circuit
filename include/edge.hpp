@@ -8,9 +8,10 @@ struct Edge
 {
     unsigned node1_ = 0, node2_ = 0;
     double resistance_ = 0.0, emf_ = 0.0;
+    unsigned ind_ = 0;
     Edge() = default;
-    Edge(unsigned n1, unsigned n2, double r, double e = 0.0)
-    :node1_ {n1}, node2_ {n2}, resistance_ {r}, emf_ {e}
+    Edge(unsigned n1, unsigned n2, double r, double e = 0.0, unsigned ind = 0)
+    :node1_ {n1}, node2_ {n2}, resistance_ {r}, emf_ {e}, ind_ {ind}
     {}
 }; // struct Edge
 

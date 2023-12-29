@@ -286,7 +286,6 @@ TEST(Circuit, solve_circuitMultiEdgeCase)
     }
 }
 
-
 int main(int argc, char** argv)
 {
     testing::InitGoogleTest(&argc, argv);

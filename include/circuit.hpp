@@ -16,19 +16,14 @@ class Circuit final
 {
 public:
     using size_type = std::size_t;
-    using Edges = Container::Vector<Edge>;
+    using Edges = ConnectedCircuit::Edges;
     
     using EdgeCur = typename ConnectedCircuit::EdgeCur;
     struct EdgeCurLess
     {
         bool operator()(const EdgeCur& ec1, const EdgeCur& ec2) const noexcept
         {
-            if (ec1.first.node1_ < ec2.first.node1_)
-                return true;
-            else if (ec1.first.node1_ > ec2.first.node1_)
-                return false;
-            else
-                return ec1.first.node2_ < ec2.first.node2_;
+            return ec1.first.ind_ < ec2.first.ind_;
         }
     };
 
@@ -97,17 +92,17 @@ private:
     template<std::input_iterator InpIt> 
     static ConnectedCircuit make_connected_cir(InpIt first, InpIt last)
     {
-        std::unordered_set<Edge> edges_set {};
-        size_type errors = 0;
+        std::unordered_set<const Edge*> edges_set {};
 
         for (;first != last; ++first) // MN iterations
             for (const auto& pair: first->second) // ME iterations
-                errors += !edges_set.insert(*pair.second).second;
+                edges_set.insert(*pair.second).second;
                 
-        if (errors != edges_set.size())
-            throw std::logic_error{"input has identical edges"};
+        Edges edges {};
+        for (auto begin = edges_set.cbegin(), end = edges_set.cend(); begin != end; ++begin)
+            edges.push_back(**begin);
 
-        return ConnectedCircuit(edges_set.cbegin(), edges_set.cend()); // ME iterations
+        return ConnectedCircuit(std::move(edges)); // ME iterations
     }
 
 public:
@@ -115,7 +110,7 @@ public:
     template<std::input_iterator InpIt>
     Circuit(InpIt first, InpIt last)
     {
-        Nodes nodes = make_nodes(first, last); // E iterations
+        const auto& nodes = make_nodes(first, last); // E iterations
         number_of_nodes_ = nodes.size();
 
         size_type nodes_placed = 0;
