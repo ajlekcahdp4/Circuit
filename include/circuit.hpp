@@ -83,24 +83,25 @@ private:
     template<std::input_iterator InpIt> 
     static ConnectedCircuit make_connected_cir(InpIt first, InpIt last)
     {
-        std::unordered_set<const Edge*> edges_set {};
+        std::unordered_set<const Edge*> edges_ptr_set {};
 
         for (;first != last; ++first) // MN iterations
             for (const auto& pair: first->second) // ME iterations
-                edges_set.insert(pair.second);
+                edges_ptr_set.insert(pair.second);
                 
         Edges edges {};
-        for (auto begin = edges_set.cbegin(), end = edges_set.cend(); begin != end; ++begin)
-            edges.push_back(**begin);
+        for (const auto& edge_ptr: edges_ptr_set) // ME iterations
+            edges.push_back(*edge_ptr);
 
         return ConnectedCircuit(std::move(edges)); // ME iterations
     }
 
+    // Complexity: O(E)
     template<std::input_iterator InpIt>
-    static Edges make_edges(InpIt first, InpIt last)
+    static Edges make_edges_from_input_edges(InpIt first, InpIt last)
     {
-        Edges edges (first, last);
-        for (size_type i = 0; i < edges.size(); ++i)
+        Edges edges (first, last); // E iterations
+        for (size_type i = 0; i < edges.size(); ++i) // E iterations
             edges[i].ind_ = i;
         return edges;
     }
@@ -109,9 +110,9 @@ public:
     // Complexity: O(C * MN * ME)
     template<std::input_iterator InpIt>
     Circuit(InpIt first, InpIt last)
-    requires std::is_same<typename std::remove_cvref_t<typename std::iterator_traits<InpIt>::value_type>, InputOutput::IEdge>::value
+    requires std::is_same<typename std::remove_cvref_t<typename std::iterator_traits<InpIt>::value_type>, InputOutput::InputEdge>::value
     {
-        const auto& edges = make_edges(first, last);
+        const auto& edges = make_edges_from_input_edges(first, last); // E iterations
 
         auto nodes = make_nodes(edges.cbegin(), edges.cend()); // E iterations
         number_of_nodes_ = nodes.size();
@@ -124,8 +125,9 @@ public:
             number_of_edges_ += cirs_.back().number_of_edges();
         }
     }
+    
     // Complexity: O(C * MN * ME)
-    Circuit(std::initializer_list<InputOutput::IEdge> ilist): Circuit(ilist.begin(), ilist.end()) {}
+    Circuit(std::initializer_list<InputOutput::InputEdge> ilist): Circuit(ilist.begin(), ilist.end()) {}
 
     size_type number_of_edges() const {return number_of_edges_;}
     size_type number_of_nodes() const {return number_of_nodes_;}

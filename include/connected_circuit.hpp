@@ -26,10 +26,10 @@ const connection not_connected = 0;
 class ConnectedCircuit final
 {
 public:
-    using EdgeCur = std::pair<Edge, double>;
-    using Solution = Container::Vector<EdgeCur>;
-    using Edges = Container::Vector<Edge>;
-    using size_type = std::size_t;
+    using EdgeCur   = std::pair<Edge, double>;
+    using Solution  = Container::Vector<EdgeCur>;
+    using Edges     = Container::Vector<Edge>;
+    using size_type = typename Edges::size_type;
 
 private:
     struct DblCmp
@@ -58,7 +58,7 @@ private:
 
     // Complexity: O(E)
     template<std::forward_iterator FwdIt>
-    static std::size_t calc_height(FwdIt first, FwdIt last)
+    static size_type calc_height(FwdIt first, FwdIt last)
     {
         std::unordered_set<unsigned> set_nodes {};
         for (; first != last; ++first) // E iterations
@@ -87,11 +87,12 @@ private:
         return nodes_to_indexis_.find(node)->second;
     }
 
+    // Complexity: O(E)
     template<std::input_iterator InpIt>
-    Edges make_edges(InpIt first, InpIt last)
+    Edges make_edges_from_input_edges(InpIt first, InpIt last)
     {
         Edges edges {};
-        for (unsigned i = 0; first != last; ++first, ++i)
+        for (unsigned i = 0; first != last; ++first, ++i) // E iterations
             edges.push_back(Edge(*first, i));
         return edges;
     }
@@ -122,13 +123,16 @@ public:
     // Complexity: O(E)
     ConnectedCircuit(std::initializer_list<Edge> ilist): ConnectedCircuit(ilist.begin(), ilist.end()) {}
 
+    // Complexity: O(E)
     template<std::input_iterator InpIt>
     ConnectedCircuit(InpIt first, InpIt last)
-    requires std::is_same<typename std::remove_cvref_t<typename std::iterator_traits<InpIt>::value_type>, InputOutput::IEdge>::value
-    :ConnectedCircuit(make_edges(first, last))
+    requires std::is_same<typename std::remove_cvref_t<typename std::iterator_traits<InpIt>::value_type>,
+    InputOutput::InputEdge>::value
+    :ConnectedCircuit(make_edges_from_input_edges(first, last))
     {}
 
-    ConnectedCircuit(std::initializer_list<InputOutput::IEdge> ilist): ConnectedCircuit(ilist.begin(), ilist.end()) {}
+    // Complexity: O(E)
+    ConnectedCircuit(std::initializer_list<InputOutput::InputEdge> ilist): ConnectedCircuit(ilist.begin(), ilist.end()) {}
     
     size_type number_of_nodes() const {return incidence_matrix_.height();}
     size_type number_of_edges() const {return edges_.size();}
