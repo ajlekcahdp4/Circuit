@@ -17,17 +17,8 @@ class Circuit final
 public:
     using size_type = std::size_t;
     using Edges = ConnectedCircuit::Edges;
-    
-    using EdgeCur = typename ConnectedCircuit::EdgeCur;
-    struct EdgeCurLess
-    {
-        bool operator()(const EdgeCur& ec1, const EdgeCur& ec2) const noexcept
-        {
-            return ec1.first.ind_ < ec2.first.ind_;
-        }
-    };
-
-    using Solution = std::set<EdgeCur, EdgeCurLess>;
+    using EdgeCur  = typename ConnectedCircuit::EdgeCur;
+    using Solution = typename ConnectedCircuit::Solution;
 
 private:
     // C - number of connected circuits in circuit (cirs_.size())
@@ -96,7 +87,7 @@ private:
 
         for (;first != last; ++first) // MN iterations
             for (const auto& pair: first->second) // ME iterations
-                edges_set.insert(*pair.second).second;
+                edges_set.insert(pair.second);
                 
         Edges edges {};
         for (auto begin = edges_set.cbegin(), end = edges_set.cend(); begin != end; ++begin)
@@ -105,12 +96,24 @@ private:
         return ConnectedCircuit(std::move(edges)); // ME iterations
     }
 
+    template<std::input_iterator InpIt>
+    static Edges make_edges(InpIt first, InpIt last)
+    {
+        Edges edges (first, last);
+        for (size_type i = 0; i < edges.size(); ++i)
+            edges[i].ind_ = i;
+        return edges;
+    }
+
 public:
     // Complexity: O(C * MN * ME)
     template<std::input_iterator InpIt>
     Circuit(InpIt first, InpIt last)
+    requires std::is_same<typename std::remove_cvref_t<typename std::iterator_traits<InpIt>::value_type>, InputOutput::IEdge>::value
     {
-        const auto& nodes = make_nodes(first, last); // E iterations
+        const auto& edges = make_edges(first, last);
+
+        auto nodes = make_nodes(edges.cbegin(), edges.cend()); // E iterations
         number_of_nodes_ = nodes.size();
 
         size_type nodes_placed = 0;
@@ -122,7 +125,7 @@ public:
         }
     }
     // Complexity: O(C * MN * ME)
-    Circuit(std::initializer_list<Edge> ilist): Circuit(ilist.begin(), ilist.end()) {}
+    Circuit(std::initializer_list<InputOutput::IEdge> ilist): Circuit(ilist.begin(), ilist.end()) {}
 
     size_type number_of_edges() const {return number_of_edges_;}
     size_type number_of_nodes() const {return number_of_nodes_;}

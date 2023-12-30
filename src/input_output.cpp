@@ -41,7 +41,7 @@ str_citr skip_to_signed(str_citr itr, str_citr end)
     return itr;
 }
 
-Edge scan_edge(const std::string& str)
+IEdge scan_edge(const std::string& str)
 {
     unsigned node1 = 0, node2 = 0;
     double res = 0.0, emf = 0.0;
@@ -66,12 +66,12 @@ Edge scan_edge(const std::string& str)
     if (itr != str.cend())
         emf = scan_double(itr);
 
-    return Edge(node1, node2, res, emf);
+    return IEdge{node1, node2, res, emf};
 }
 
-Container::Vector<Edge> input()
+Container::Vector<IEdge> input()
 {
-    Container::Vector<Edge> edges {};
+    Container::Vector<IEdge> edges {};
     std::string str {};
     while (std::getline(std::cin, str))
         edges.push_back(scan_edge(str));
@@ -80,11 +80,10 @@ Container::Vector<Edge> input()
 
 void output(SolutionIt first, SolutionIt last)
 {
-    while (first != last)
+    for (; first != last; ++first)
     {
         std::cout << first->first.node1_ << " -- " << first->first.node2_ << ": ";
         std::cout << first->second << " A\n";
-        ++first;
     }
     std::cout.flush();
 }

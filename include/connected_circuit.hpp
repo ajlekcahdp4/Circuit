@@ -87,6 +87,15 @@ private:
         return nodes_to_indexis_.find(node)->second;
     }
 
+    template<std::input_iterator InpIt>
+    Edges make_edges(InpIt first, InpIt last)
+    {
+        Edges edges {};
+        for (unsigned i = 0; first != last; ++first, ++i)
+            edges.push_back(Edge(*first, i));
+        return edges;
+    }
+
 public:
     // Complexity: O(E)
     explicit ConnectedCircuit(Edges&& edges)
@@ -105,11 +114,22 @@ public:
 
     // Complexity: O(E)
     template<std::input_iterator InpIt>
-    ConnectedCircuit(InpIt first, InpIt last): ConnectedCircuit(Edges(first, last)) {}
+    ConnectedCircuit(InpIt first, InpIt last)
+    requires std::is_same<typename std::remove_cvref_t<typename std::iterator_traits<InpIt>::value_type>, Edge>::value
+    :ConnectedCircuit(Edges(first, last))
+    {}
 
     // Complexity: O(E)
     ConnectedCircuit(std::initializer_list<Edge> ilist): ConnectedCircuit(ilist.begin(), ilist.end()) {}
 
+    template<std::input_iterator InpIt>
+    ConnectedCircuit(InpIt first, InpIt last)
+    requires std::is_same<typename std::remove_cvref_t<typename std::iterator_traits<InpIt>::value_type>, InputOutput::IEdge>::value
+    :ConnectedCircuit(make_edges(first, last))
+    {}
+
+    ConnectedCircuit(std::initializer_list<InputOutput::IEdge> ilist): ConnectedCircuit(ilist.begin(), ilist.end()) {}
+    
     size_type number_of_nodes() const {return incidence_matrix_.height();}
     size_type number_of_edges() const {return edges_.size();}
 

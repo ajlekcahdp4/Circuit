@@ -7,7 +7,7 @@ namespace Circuit
 {
 namespace InputOutput
 {
-typename Circuit::Edges input();
+Container::Vector<IEdge> input();
 
 using SolutionIt = typename Circuit::Solution::const_iterator;
 void output(SolutionIt first, SolutionIt last);
