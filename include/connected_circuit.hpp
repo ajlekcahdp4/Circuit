@@ -36,7 +36,7 @@ private:
     {
         bool operator()(double d1, double d2) const
         {
-            return std::abs(d1 - d2) <= (std::abs(d1) + std::abs(d2)) * 1e-8;
+            return std::abs(d1 - d2) <= (std::abs(d1) + std::abs(d2) + 1) * 1e-8;
         }
     };
     using MatrixSLAE     = Matrix::MatrixSLAE<double, DblCmp>;
