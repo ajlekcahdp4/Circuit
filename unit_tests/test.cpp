@@ -312,6 +312,21 @@ TEST(Circuit, solve_circuitMultiEdgeCase)
     EXPECT_TRUE(dbl_cmp(solution2[2].second, 1.0));
     EXPECT_TRUE(dbl_cmp(solution2[3].second, -1.0));
 
+    Circuit::Circuit cir3 {
+        {1, 2, 0.0, 10.0},
+        {1, 2, 1.0},
+        {1, 3, 3.0},
+        {2, 3, 10.0, 20.0},
+        {2, 3, 2.0}
+    };
+    EXPECT_EQ(cir3.number_of_connected_circuits(), 1);
+    const auto& solution3 = cir3.solve_circuit();
+    EXPECT_EQ(solution3.size(), 5);
+    EXPECT_TRUE(dbl_cmp(solution3[0].second, 12.85714));
+    EXPECT_TRUE(dbl_cmp(solution3[1].second, -10.0));
+    EXPECT_TRUE(dbl_cmp(solution3[2].second, -2.85714));
+    EXPECT_TRUE(dbl_cmp(solution3[3].second, 2.14286));
+    EXPECT_TRUE(dbl_cmp(solution3[4].second, 0.714286));
 }
 
 int main(int argc, char** argv)

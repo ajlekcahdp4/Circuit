@@ -38,7 +38,7 @@ void ConnectedCircuit::add_potential_difference_equations(MatrixSLAE& slae) cons
 auto ConnectedCircuit::solve_circuit() const -> Solution
 {
     const auto& slae = make_slae();    // (N + E)^2 iterations
-    auto currents = slae.solve_slae(); // (N + E)^3 iterations
+    const auto& currents = slae.solve_slae(); // (N + E)^3 iterations
     if (currents.size() == 0)
         return Solution{};
 
