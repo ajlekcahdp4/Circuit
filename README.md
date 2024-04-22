@@ -3,7 +3,7 @@ My solution of electical circuits problem.
 
 # How to clone?
 ```
-git clone --recurse-submodules git@github.com:LegendaryHog/ElcCir.git
+git clone https://github.com/LegendaryHog/ElcCir.git
 ```
 
 # How to build?
