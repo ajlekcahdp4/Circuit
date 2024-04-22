@@ -6,3 +6,4 @@ build/
 .vscode
 *.dat
 *.ans
+end_to_end/test_runner
