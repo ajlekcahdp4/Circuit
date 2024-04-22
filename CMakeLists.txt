@@ -24,10 +24,20 @@ if(NOT ${Matrix_FOUND})
 endif()
 
 find_package(Matrix)
-if (${Matrix_FOUND})
+if(${Matrix_FOUND})
     message("-- Found Matrix: True")
 else()
     message(FATAL_ERROR "-- Found Matrix: False")
+endif()
+
+set(END_TO_END_TESTING_ENABLED True)
+if(${END_TO_END_TESTING_ENABLED})
+    execute_process("git -C end_to_end/ clone https://github.com/LegendaryHog/test_runner.git" OUTPUT_QUIET)
+endif()
+
+if(NOT EXISTS "end_to_end/test_runner" AND ${END_TO_END_TESTING_ENABLED})
+    message(WARNING "Python lib to end to end testing not found.")
+    message(WARNING "If you don't need end to end tests set END_TO_END_TESTING_ENABLED in False")
 endif()
 
 set(CMAKE_CXX_STANDARD          20)
