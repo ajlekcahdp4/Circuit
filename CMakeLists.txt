@@ -17,7 +17,7 @@ if(NOT ${Matrix_FOUND})
     include(FetchContent)
     FetchContent_Declare(
         Matrix
-        GIT_REPOSITORY https://github.com/LegendaryHog/matrix
+        GIT_REPOSITORY https://github.com/LegendaryHog/Matrix
         GIT_TAG        master
         OVERRIDE_FIND_PACKAGE
     )
