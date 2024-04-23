@@ -54,10 +54,10 @@ set(CMAKE_CXX_STANDARD          20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS        OFF)
 
-aux_source_directory(src/ PROJECT_SOURCE_DIRECTORY)
-add_library(${PROJECT_NAME} ${PROJECT_SOURCE_DIRECTORY})
+aux_source_directory(lib/src/ LIB_SRC_LIST)
+add_library(${PROJECT_NAME} ${LIB_SRC_LIST})
 target_link_libraries(${PROJECT_NAME} PRIVATE Matrix)
-target_include_directories(${PROJECT_NAME} PUBLIC include/)
+target_include_directories(${PROJECT_NAME} PUBLIC lib/include)
 
 add_subdirectory(unit_tests)
 add_subdirectory(task)
