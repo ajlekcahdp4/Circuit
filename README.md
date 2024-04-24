@@ -8,8 +8,9 @@ git clone https://github.com/LegendaryHog/ElcCir.git
 
 # How to build?
 ```
-cmake -B build/ -DCMAKE_CXX_COMPILER=[your c++ compiler] -DCMAKE_BUILD_TYPE=Release
+cmake -B build/ -DCMAKE_CXX_COMPILER=[your c++ compiler] -DCMAKE_BUILD_TYPE=Release -DEND_TO_END_TESTING=[True/False]
 
+cmake --build build/ --target Circuit       # building Circuit library 
 cmake --build build/ --target unit_tests    # building all unit tests
 cmake --build build/ --target currents      # building problem solution
 cmake --build build/ --target whole_project # building the unit_tests and currents
@@ -37,6 +38,9 @@ chmod "+x" test_gen.py
 Script will generate test in `filename`. If you add flag `--ans` script will generate answer in `filename.ans`
 
 # How to run end to end tests?
+If you **don't** want to run end to end tests, you need run cmake configuration with `-DEND_TO_END_TESTING=False`
+Else you need run withou that flag, or set it `True`. It will install my python lib for end to end tests from my github.
+
 ```
 chmod "+x" test_cmp.py
 ./test_cmp.py build_dir test1 [test2, test3, ...]
