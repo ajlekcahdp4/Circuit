@@ -116,7 +116,7 @@ public:
     // Complexity: O(E)
     template<std::input_iterator InpIt>
     ConnectedCircuit(InpIt first, InpIt last)
-    requires std::is_same<typename std::remove_cvref_t<typename std::iterator_traits<InpIt>::value_type>, Edge>::value
+    requires (std::is_same<typename std::remove_cvref_t<typename std::iterator_traits<InpIt>::value_type>, Edge>::value)
     :ConnectedCircuit(Edges(first, last))
     {}
 
@@ -126,8 +126,8 @@ public:
     // Complexity: O(E)
     template<std::input_iterator InpIt>
     ConnectedCircuit(InpIt first, InpIt last)
-    requires std::is_same<typename std::remove_cvref_t<typename std::iterator_traits<InpIt>::value_type>,
-    InputOutput::InputEdge>::value
+    requires (std::is_same<typename std::remove_cvref_t<typename std::iterator_traits<InpIt>::value_type>,
+    InputOutput::InputEdge>::value)
     :ConnectedCircuit(make_edges_from_input_edges(first, last))
     {}
 
