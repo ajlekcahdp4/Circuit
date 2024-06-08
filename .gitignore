@@ -1,9 +1,7 @@
 build/
-*.txt
-!CMakeLists.txt
-*.out
 *.o
-.vscode
-*.dat
-*.ans
-end_to_end/test_runner
+*.out
+**/.cache
+**/.direnv
+test/mats/
+

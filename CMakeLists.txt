@@ -11,25 +11,6 @@ find_package(Threads REQUIRED)
 find_package(GTest REQUIRED)
 enable_testing()
 
-find_package(Matrix QUIET)
-
-if(NOT ${Matrix_FOUND})
-    include(FetchContent)
-    FetchContent_Declare(
-        Matrix
-        GIT_REPOSITORY https://github.com/LegendaryHog/Matrix
-        GIT_TAG        master
-        OVERRIDE_FIND_PACKAGE
-    )
-endif()
-
-find_package(Matrix QUIET)
-if(${Matrix_FOUND})
-    message(STATUS "Found Matrix - done")
-else()
-    message(FATAL_ERROR "Didn't find Matrix")
-endif()
-
 set(END_TO_END_TESTING True CACHE STRING "")
 
 if(${END_TO_END_TESTING} AND NOT EXISTS "end_to_end/test_runner")
@@ -54,10 +35,12 @@ set(CMAKE_CXX_STANDARD          20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS        OFF)
 
+set (CIRCUIT_LIB_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib/include)
+set (CIRCUIT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
 aux_source_directory(lib/src/ LIB_SRC_LIST)
 add_library(${PROJECT_NAME} ${LIB_SRC_LIST})
-target_link_libraries(${PROJECT_NAME} PRIVATE Matrix)
-target_include_directories(${PROJECT_NAME} PUBLIC lib/include)
+target_include_directories(${PROJECT_NAME} PUBLIC ${CIRCUIT_LIB_INCLUDE_DIR})
 
 add_subdirectory(unit_tests)
 add_subdirectory(task)
